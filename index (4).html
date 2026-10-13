@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pet Shop</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#f6f6f3;--card:#fff;--text:#1d1d1b;--muted:#8a8a85;--accent:#2f9e6f;--accent-t:#fff;--chip:#ebebe6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15161a;--card:#1f2127;--text:#f1f1ee;--muted:#8d8f96;--chip:#2a2d35}}
+:root[data-theme="dark"]{--bg:#15161a;--card:#1f2127;--text:#f1f1ee;--muted:#8d8f96;--chip:#2a2d35}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.35 -apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:90px}
+.scr{display:none}.scr.on{display:block}
+h1{margin:0;font-size:22px}
+.meta{color:var(--muted);font-size:13px}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:12px 14px 8px;z-index:5}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.link{border:0;background:none;color:var(--accent);font-size:14px;cursor:pointer}
+input,select{width:100%;border:0;background:var(--chip);color:var(--text);padding:12px 14px;border-radius:12px;font-size:15px;outline:none;margin-bottom:10px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none}
+.chips:empty{display:none}
+.chip{flex:none;border:0;background:var(--chip);color:var(--text);padding:8px 14px;border-radius:20px;font-size:14px;cursor:pointer}
+.chip.on{background:var(--accent);color:var(--accent-t)}
+.hero{text-align:center;padding:60px 14px 24px}.hero .logo{font-size:64px}
+.big{display:block;width:calc(100% - 28px);margin:12px 14px;padding:20px;border:0;border-radius:18px;background:var(--card);color:var(--text);font-size:19px;font-weight:700;text-align:left;cursor:pointer}
+.big span{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:4px}
+.tiles,.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:6px 14px}
+.tile{position:relative;aspect-ratio:1;border:0;border-radius:18px;overflow:hidden;background:var(--chip);cursor:pointer;padding:0}
+.tile .te{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:56px;padding-bottom:20px}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile b{position:absolute;left:0;right:0;bottom:0;padding:22px 10px 10px;color:#fff;text-align:left;font-size:15px;background:linear-gradient(transparent,rgba(0,0,0,.7))}
+.card{background:var(--card);border-radius:16px;padding:10px;display:flex;flex-direction:column}
+.pic{height:96px;border-radius:12px;background:var(--chip);display:flex;align-items:center;justify-content:center;font-size:48px;overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover}
+.name{margin:8px 0 2px;font-weight:600;min-height:38px}
+.row{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}
+.price{font-weight:700}
+.btn{border:0;background:var(--accent);color:var(--accent-t);border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer;font-size:14px}
+.step{display:flex;align-items:center;gap:8px;background:var(--chip);border-radius:10px}
+.step button{border:0;background:none;color:var(--text);font-size:18px;width:30px;height:32px;cursor:pointer}
+.empty{text-align:center;color:var(--muted);padding:40px 14px;grid-column:1/-1}
+.sec{padding:4px 14px;font-weight:700;font-size:17px}
+.form{padding:6px 14px}
+.photo{display:flex;align-items:center;justify-content:center;height:70px;border-radius:12px;border:2px dashed var(--muted);color:var(--muted);margin-bottom:10px;cursor:pointer}
+#prev{display:block;width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-bottom:10px}
+#prev[hidden]{display:none}
+.form .btn{width:100%;padding:14px;font-size:16px;border-radius:12px}
+.item{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:12px;padding:10px;margin:0 14px 8px}
+.item .e{width:44px;height:44px;border-radius:8px;overflow:hidden;background:var(--chip);display:flex;align-items:center;justify-content:center;font-size:26px;flex:none}
+.item .e img{width:100%;height:100%;object-fit:cover}.item .t{flex:1}
+.bar{position:fixed;left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));display:none;justify-content:space-between;background:var(--accent);color:var(--accent-t);border:0;border-radius:14px;padding:15px 18px;font-size:16px;font-weight:700;cursor:pointer;z-index:6}
+.bar.show{display:flex}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;z-index:10}
+.sheet.show{display:flex}
+.panel{background:var(--bg);width:100%;max-height:85%;overflow:auto;border-radius:20px 20px 0 0;padding:16px 0 calc(16px + env(safe-area-inset-bottom,0px))}
+.panel h2{margin:0 14px 10px;font-size:19px}
+.total{display:flex;justify-content:space-between;font-size:17px;font-weight:700;margin:12px 14px}
+.panel .btn{width:calc(100% - 28px);margin:0 14px;padding:14px;font-size:16px;border-radius:12px}
+.toast{position:fixed;top:calc(16px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:12px;display:none;z-index:20;max-width:90%;text-align:center}
+</style>
+</head>
+<body>
+
+<section id="role" class="scr">
+  <div class="hero"><div class="logo">🐾</div><h1>Pet Shop</h1><p class="meta">Выберите, как вы хотите зайти</p></div>
+  <button class="big" data-a="role" data-r="buyer">🛍️ Я покупатель<span>Смотреть товары и делать заказы</span></button>
+  <button class="big" data-a="role" data-r="seller">📦 Я продавец<span>Публиковать свои товары</span></button>
+</section>
+
+<section id="buyer" class="scr">
+  <header>
+    <div class="top"><h1>🐾 Pet Shop</h1><button class="link" data-a="switch">Сменить роль</button></div>
+    <input id="q" placeholder="Поиск товаров" autocomplete="off">
+    <div class="chips" id="chips"></div>
+  </header>
+  <div id="main"></div>
+</section>
+
+<section id="seller" class="scr">
+  <header><div class="top"><h1>📦 Кабинет продавца</h1><button class="link" data-a="switch">Сменить роль</button></div></header>
+  <div class="form">
+    <label class="photo"><span id="pt">📷 Добавить фото товара</span><input type="file" id="file" accept="image/*" hidden></label>
+    <img id="prev" alt="" hidden>
+    <input id="sn" placeholder="Название товара">
+    <input id="sp" placeholder="Цена, ₽" inputmode="decimal">
+    <select id="sc"></select>
+    <select id="st"></select>
+    <button class="btn" data-a="pub">Опубликовать</button>
+  </div>
+  <div class="sec" style="margin:16px 0 8px">Мои товары</div>
+  <div id="mine"></div>
+</section>
+
+<button class="bar" id="bar" data-a="cart"></button>
+<div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+var CUR = "₽";
+
+/* ===== КАТЕГОРИИ =====
+   n   - название категории
+   e   - эмодзи (показывается, пока нет фото)
+   img - ССЫЛКА НА ФОТО КАТЕГОРИИ (сюда вставляйте свои фото)
+   t   - виды товаров внутри категории */
+var C = [
+ {n:"Еда и лакомства", e:"🍖", img:"https://loremflickr.com/400/400/dog,food?lock=1", t:["Корм","Лакомства"]},
+ {n:"Одежда и обувь", e:"🧥", img:"https://loremflickr.com/400/400/dog,coat?lock=2", t:["Вязаная одежда","Дождевики","Ботиночки"]},
+ {n:"Для дома", e:"🛏️", img:"https://loremflickr.com/400/400/dog,bed?lock=3", t:["Лежанки","Пледы","Чистящие средства"]},
+ {n:"Аптечка и витамины", e:"💊", img:"https://loremflickr.com/400/400/veterinary,dog?lock=4", t:["Лекарства","Наборы витаминов","Первая необходимость"]},
+ {n:"Игрушки", e:"🎾", img:"https://loremflickr.com/400/400/dog,toy?lock=5", t:["Мячи","Мягкие игрушки","Канаты и грызунки","Интерактивные"]},
+ {n:"Для прогулки", e:"🦮", img:"https://loremflickr.com/400/400/dog,leash?lock=6", t:["Шлейки","Поводки","Пакеты для уборки"]},
+ {n:"Для ухода", e:"🛁", img:"https://loremflickr.com/400/400/dog,grooming?lock=7", t:["Шампуни","Кондиционеры","Расчёски","Полотенца","Когтерезы","Зубные пасты и щётки"]}
+];
+
+/* ===== ТОВАРЫ-ПРИМЕРЫ: категория|вид|название|вес/размер|цена (номера с нуля) ===== */
+var SEED = [
+"0|0|Корм сухой для собак, говядина|2 кг|1450","0|1|Лакомство «Косточка»|150 г|390",
+"1|0|Вязаный свитер для собаки|M|1690","1|1|Дождевик с капюшоном|M|1850","1|2|Ботиночки на липучках|4 шт|1590",
+"2|0|Лежанка мягкая|45×35 см|1990","2|1|Плед флисовый|70×100 см|990","2|2|Спрей от запахов|500 мл|750",
+"3|0|Капли от блох и клещей|1 пипетка|1150","3|1|Витамины для шерсти|90 таб.|1290","3|2|Антисептик и бинты|набор|690",
+"4|0|Мячик резиновый|6 см|250","4|1|Плюшевая игрушка с пищалкой|25 см|550","4|2|Канат с узлами|35 см|420","4|3|Мяч-головоломка|—|1390",
+"5|0|Шлейка регулируемая|M|1350","5|1|Поводок-рулетка|5 м|1290","5|2|Пакеты для уборки|120 шт.|390",
+"6|0|Шампунь для собак|250 мл|650","6|1|Кондиционер для шерсти|250 мл|720","6|2|Расчёска-пуходёрка|—|590","6|3|Полотенце из микрофибры|60×90 см|850","6|4|Когтерез|—|690","6|5|Зубная паста и щётка|набор|550"
+].map(function(s,i){var a=s.split("|");return {id:"s"+i,c:+a[0],t:+a[1],n:a[2],w:a[3],p:+a[4]}});
+
+var $ = function(id){return document.getElementById(id)};
+var tg = window.Telegram && window.Telegram.WebApp;
+if (tg) { try { tg.ready(); tg.expand(); } catch(e){} }
+
+/* ===== БАЗА ДАННЫХ (Supabase) ===== */
+var SB = "https://dtxekqgdurpzoqckazlp.supabase.co";
+var KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0eGVrcWdkdXJwem9xY2themxwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NzQ3NTksImV4cCI6MjEwNzQ1MDc1OX0.-c3MzL2JOM_GEbLupzh38p8OSP4FeOUWN3v_Dk4lQVs";
+var UID = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.id : null;
+var busy = false;
+function loadDb(){
+  return fetch(SB+"/rest/v1/products?select=*&order=created_at.desc",{headers:{apikey:KEY,Authorization:"Bearer "+KEY}})
+    .then(function(r){if(!r.ok)throw 0;return r.json()})
+    .then(function(rows){
+      MY = rows.map(function(r){return {id:"d"+r.id,c:r.category,t:r.type,n:r.name,w:"",p:+r.price,img:r.img,sid:r.seller_id}});
+      Object.keys(cart).forEach(function(k){if(!byId(k))delete cart[k]});
+      if(role==="buyer"){main();bar()} if(role==="seller")mine();
+    })
+    .catch(function(){toast("Не удалось загрузить каталог")});
+}
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){toast("Не удалось сохранить: мало места")}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function fmt(v){return Math.round(v).toLocaleString("ru-RU")+" "+CUR}
+function toast(t){var el=$("toast");el.textContent=t;el.style.display="block";setTimeout(function(){el.style.display="none"},2500)}
+
+var MY = [], cart = {}, role = null, cat = null, ty = -1, Q = "", photo = "";
+function all(){return SEED.concat(MY)}
+function byId(id){return all().filter(function(x){return x.id===id})[0]}
+function count(){return Object.keys(cart).reduce(function(s,k){return s+cart[k]},0)}
+function sum(){return Object.keys(cart).reduce(function(s,k){var p=byId(k);return s+(p?p.p*cart[k]:0)},0)}
+function chg(id,d){cart[id]=(cart[id]||0)+d; if(cart[id]<=0) delete cart[id]; main(); bar(); if($("sheet").classList.contains("show")) openCart()}
+function pic(p){return p.img ? '<img src="'+p.img+'" alt="">' : C[p.c].e}
+function ctrl(id){
+  var q = cart[id]||0;
+  return q ? '<div class="step"><button data-a="sub" data-id="'+id+'">−</button><b>'+q+'</b><button data-a="add" data-id="'+id+'">+</button></div>'
+           : '<button class="btn" data-a="add" data-id="'+id+'">В корзину</button>';
+}
+
+function setRole(r){
+  role = r; cat = null; ty = -1; Q = ""; $("q").value = ""; $("sheet").classList.remove("show");
+  $("role").classList.toggle("on", !r);
+  $("buyer").classList.toggle("on", r==="buyer");
+  $("seller").classList.toggle("on", r==="seller");
+  if (r==="buyer") main(); if (r==="seller") mine(); if (r) loadDb();
+  bar(); window.scrollTo(0,0);
+}
+
+function main(){
+  var feed = cat!==null || Q, h = "", ch = "";
+  if (!feed) {
+    h = '<div class="tiles">' + C.map(function(c,i){
+      return '<button class="tile" data-a="cat" data-i="'+i+'"><span class="te">'+c.e+'</span><img src="'+c.img+'" alt="" loading="lazy" onerror="this.remove()"><b>'+c.n+'</b></button>';
+    }).join("") + '</div>';
+  } else {
+    ch = '<button class="chip" data-a="home">← Категории</button>';
+    if (cat!==null) {
+      ch += '<button class="chip'+(ty<0?' on':'')+'" data-a="type" data-i="-1">Все</button>' +
+        C[cat].t.map(function(t,i){return '<button class="chip'+(ty===i?' on':'')+'" data-a="type" data-i="'+i+'">'+t+'</button>'}).join("");
+    }
+    var list = all().filter(function(p){
+      return (cat===null||p.c===cat) && (ty<0||p.t===ty) && (p.n+" "+C[p.c].t[p.t]).toLowerCase().indexOf(Q)>-1;
+    });
+    h = (cat!==null ? '<div class="sec" style="margin-bottom:4px">'+C[cat].n+'</div>' : '') + '<div class="grid">' + (list.length ? list.map(function(p){
+      return '<div class="card"><div class="pic">'+pic(p)+'</div><div class="name">'+esc(p.n)+'</div><div class="meta">'+esc(C[p.c].t[p.t])+(p.w?' · '+esc(p.w):'')+'</div><div class="row"><span class="price">'+fmt(p.p)+'</span>'+ctrl(p.id)+'</div></div>';
+    }).join("") : '<div class="empty">Ничего не найдено</div>') + '</div>';
+  }
+  $("chips").innerHTML = ch; $("main").innerHTML = h;
+}
+
+function bar(){
+  var n = count(), b = $("bar");
+  b.classList.toggle("show", n>0 && role==="buyer");
+  b.innerHTML = '<span>Корзина · '+n+'</span><span>'+fmt(sum())+'</span>';
+}
+function openCart(){
+  var ids = Object.keys(cart);
+  if(!ids.length){ $("sheet").classList.remove("show"); return; }
+  $("panel").innerHTML = '<h2>Корзина</h2>' + ids.map(function(id){
+    var p = byId(id);
+    return '<div class="item"><span class="e">'+pic(p)+'</span><div class="t">'+esc(p.n)+'<div class="meta">'+fmt(p.p)+'</div></div><div class="step"><button data-a="sub" data-id="'+id+'">−</button><b>'+cart[id]+'</b><button data-a="add" data-id="'+id+'">+</button></div></div>';
+  }).join("") + '<div class="total"><span>Итого</span><span>'+fmt(sum())+'</span></div><button class="btn" data-a="co">Оформить заказ</button>';
+  $("sheet").classList.add("show");
+}
+function checkout(){
+  if (!tg || !tg.initData) return toast("Откройте магазин в Telegram, чтобы оформить заказ");
+  if (busy) return; busy = true; toast("Отправляем заказ…");
+  var items = Object.keys(cart).map(function(id){var p=byId(id);return {name:p.n,qty:cart[id],price:p.p}});
+  fetch(SB+"/functions/v1/order",{method:"POST",headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"},body:JSON.stringify({initData:tg.initData,items:items})})
+    .then(function(r){
+      if(!r.ok) throw 0;
+      cart = {}; $("sheet").classList.remove("show"); main(); bar();
+      toast("Заказ отправлен ✅ Мы скоро свяжемся с вами");
+    })
+    .catch(function(){toast("Не удалось отправить заказ. Попробуйте ещё раз")})
+    .then(function(){busy=false});
+}
+
+/* ===== Продавец ===== */
+function fillTypes(){$("st").innerHTML = C[+$("sc").value].t.map(function(t,i){return '<option value="'+i+'">'+t+'</option>'}).join("")}
+$("sc").innerHTML = C.map(function(c,i){return '<option value="'+i+'">'+c.n+'</option>'}).join("");
+$("sc").addEventListener("change",fillTypes); fillTypes();
+$("file").addEventListener("change",function(e){
+  var f = e.target.files[0]; if(!f) return;
+  var r = new FileReader();
+  r.onload = function(){
+    var im = new Image();
+    im.onload = function(){
+      var s = Math.min(1, 600/Math.max(im.width,im.height)), cv = document.createElement("canvas");
+      cv.width = im.width*s; cv.height = im.height*s;
+      cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);
+      photo = cv.toDataURL("image/jpeg",.75);
+      $("prev").src = photo; $("prev").hidden = false; $("pt").textContent = "📷 Заменить фото";
+    };
+    im.src = r.result;
+  };
+  r.readAsDataURL(f);
+});
+function publish(){
+  var n = $("sn").value.trim(), p = parseFloat($("sp").value.replace(",",".")), cc = +$("sc").value, tt = +$("st").value;
+  if(!photo) return toast("Добавьте фото товара");
+  if(!n) return toast("Введите название");
+  if(!(p>0)) return toast("Введите цену");
+  if(busy) return; busy = true; toast("Публикуем…");
+  var fname = Date.now()+".jpg", H = {apikey:KEY,Authorization:"Bearer "+KEY};
+  fetch(photo).then(function(r){return r.blob()}).then(function(blob){
+    return fetch(SB+"/storage/v1/object/photos/"+fname,{method:"POST",headers:{apikey:KEY,Authorization:H.Authorization,"Content-Type":"image/jpeg"},body:blob});
+  }).then(function(r){
+    if(!r.ok) throw 0;
+    return fetch(SB+"/rest/v1/products",{method:"POST",headers:{apikey:KEY,Authorization:H.Authorization,"Content-Type":"application/json",Prefer:"return=minimal"},
+      body:JSON.stringify({category:cc,type:tt,name:n,price:p,img:SB+"/storage/v1/object/public/photos/"+fname,seller_id:UID})});
+  }).then(function(r){
+    if(!r.ok) throw 0;
+    photo = ""; $("prev").hidden = true; $("pt").textContent = "📷 Добавить фото товара"; $("sn").value = ""; $("sp").value = ""; $("file").value = "";
+    toast("Товар опубликован ✅"); return loadDb();
+  }).catch(function(){toast("Не удалось опубликовать. Проверьте настройки базы")}).then(function(){busy=false});
+}
+function mine(){
+  var list = MY.filter(function(p){return UID ? p.sid===UID : true});
+  $("mine").innerHTML = list.length ? list.map(function(p){
+    return '<div class="item"><span class="e">'+pic(p)+'</span><div class="t">'+esc(p.n)+'<div class="meta">'+esc(C[p.c].n)+' · '+esc(C[p.c].t[p.t])+' · '+fmt(p.p)+'</div></div></div>';
+  }).join("") : '<div class="empty" style="padding:20px">Пока нет товаров</div>';
+}
+
+/* ===== События ===== */
+document.addEventListener("click",function(e){
+  if (e.target.id==="sheet") { e.target.classList.remove("show"); return; }
+  var el = e.target.closest("[data-a]"); if(!el) return;
+  var a = el.dataset.a, d = el.dataset;
+  if (a==="role") setRole(d.r);
+  else if (a==="switch") setRole(null);
+  else if (a==="cat") { cat = +d.i; ty = -1; main(); window.scrollTo(0,0); }
+  else if (a==="type") { ty = +d.i; main(); }
+  else if (a==="home") { cat = null; ty = -1; Q = ""; $("q").value = ""; main(); }
+  else if (a==="add") chg(d.id,1);
+  else if (a==="sub") chg(d.id,-1);
+  else if (a==="cart") openCart();
+  else if (a==="co") checkout();
+  else if (a==="pub") publish();
+});
+$("q").addEventListener("input",function(e){Q = e.target.value.trim().toLowerCase(); main()});
+setRole(null);
+</script>
+</body>
+</html>
