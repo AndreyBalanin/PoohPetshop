@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#FAF6F0">
+<title>ПУХ</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --berry:#7A2E3B;--berry-h:#5F2330;--olive:#8A9A5B;--olive-d:#6E7C46;--powder:#F2C6C6;--cream:#FAF6F0;--card:#FFFFFF;--sand:#EFE7DB;
+  --ink:#2B1F22;--ink2:#6B5C5F;--ink3:#A89A9C;--line:#E8DFD3;--div:#F0E8DC;--ok:#6E7C46;--warn:#B8803F;--err:#B84A5C;--info:#4F7494;--mint:#2F6B5F;
+  --g0:linear-gradient(135deg,#F2C6C6,#FAF6F0);--g1:linear-gradient(135deg,#DCE3C6,#FAF6F0);--g2:linear-gradient(135deg,#EFE7DB,#FAF6F0);--g3:linear-gradient(135deg,#CFE2DB,#FAF6F0);
+  --sh:0 2px 10px rgba(122,46,59,.07);
+  box-sizing:border-box;padding-top:var(--sat);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--berry:#B5586C;--berry-h:#9C4A5D;--olive:#9AAA6B;--olive-d:#8FA15C;--powder:#4B3036;--cream:#1B1416;--card:#261D20;--sand:#33282B;--ink:#F6EEF0;--ink2:#C9B9BD;--ink3:#8F7F83;--line:#3B2F33;--div:#2F2528;--ok:#9AAA6B;--warn:#D4A574;--info:#8FB3CF;--mint:#7CC4B0;--sh:none;
+  --g0:linear-gradient(135deg,#4B3036,#261D20);--g1:linear-gradient(135deg,#3A4128,#261D20);--g2:linear-gradient(135deg,#3A2F2B,#261D20);--g3:linear-gradient(135deg,#2B3F3A,#261D20)}}
+:root[data-theme="dark"]{--berry:#B5586C;--berry-h:#9C4A5D;--olive:#9AAA6B;--olive-d:#8FA15C;--powder:#4B3036;--cream:#1B1416;--card:#261D20;--sand:#33282B;--ink:#F6EEF0;--ink2:#C9B9BD;--ink3:#8F7F83;--line:#3B2F33;--div:#2F2528;--ok:#9AAA6B;--warn:#D4A574;--info:#8FB3CF;--mint:#7CC4B0;--sh:none;
+  --g0:linear-gradient(135deg,#4B3036,#261D20);--g1:linear-gradient(135deg,#3A4128,#261D20);--g2:linear-gradient(135deg,#3A2F2B,#261D20);--g3:linear-gradient(135deg,#2B3F3A,#261D20)}
+html{--sat:calc(var(--tg-safe-area-inset-top, env(safe-area-inset-top,0px)) + var(--tg-content-safe-area-inset-top, 0px));
+--sab:calc(var(--tg-safe-area-inset-bottom, env(safe-area-inset-bottom,0px)) + var(--tg-content-safe-area-inset-bottom, 0px))}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--cream);color:var(--ink);font:400 15px/1.4 Manrope,"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:calc(92px + var(--sab));-webkit-font-smoothing:antialiased}
+button{font-family:inherit;color:inherit}
+h1,h2,h3{margin:0}
+.ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none;display:inline-block;vertical-align:middle}
+.ic.s{width:18px;height:18px}.ic.l{width:32px;height:32px}
+.meta{color:var(--ink2);font-size:13px}.cap{color:var(--ink3);font-size:12px;font-weight:500}
+.wrap{padding:0 16px}
+.sec{font-size:20px;font-weight:700;margin:22px 16px 10px;display:flex;justify-content:space-between;align-items:baseline}
+.sec a,.link{color:var(--berry);font-size:14px;font-weight:700;background:none;border:0;cursor:pointer;padding:0}
+/* верхняя панель */
+.top{position:sticky;top:var(--sat);z-index:5;background:var(--cream);display:flex;align-items:center;justify-content:space-between;padding:10px 16px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:22px;color:var(--berry);letter-spacing:-.5px}
+.logo svg{width:30px;height:30px;fill:var(--berry);animation:breathe 3s ease-in-out infinite}
+.logo i{color:var(--olive);font-style:normal}
+.ibtn{position:relative;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink)}
+.ibtn .n{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:9px;background:var(--berry);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.ttl{font-size:24px;font-weight:800;margin:6px 16px 12px;letter-spacing:-.4px}
+/* поиск, чипы */
+.search{display:flex;align-items:center;gap:10px;margin:4px 16px 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 14px;height:46px;color:var(--ink3)}
+.search input{flex:1;border:0;background:none;font:inherit;font-size:16px;color:var(--ink);outline:none;min-width:0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:0 16px 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer}
+.chip.on{background:var(--berry);border-color:var(--berry);color:#fff}
+.chip.a{background:rgba(138,154,91,.2);border-color:transparent;color:var(--olive-d)}.chip.a.on{background:var(--olive-d);color:#fff}
+.chip.c{background:var(--powder);border-color:transparent;color:var(--berry)}.chip.c.on{background:var(--berry);color:#fff}
+.chip.t{background:rgba(107,140,168,.18);border-color:transparent;color:var(--info)}.chip.t.on{background:var(--info);color:#fff}
+.cat.k0 span{background:rgba(212,165,116,.3);color:var(--warn)}.cat.k1 span{background:var(--powder);color:var(--berry)}.cat.k2 span{background:rgba(138,154,91,.24);color:var(--olive-d)}
+.cat.k3 span{background:rgba(124,196,176,.26);color:var(--mint)}.cat.k4 span{background:rgba(107,140,168,.22);color:var(--info)}.cat.k5 span{background:var(--sand);color:var(--berry)}.cat.k6 span{background:rgba(124,196,176,.26);color:var(--mint)}
+.stars{display:flex;gap:2px}.stars button{background:none;border:0;font-size:34px;line-height:1;color:var(--line);cursor:pointer;padding:0 4px}.stars button.on{color:var(--warn)}
+.rt,.pshop.rt{color:var(--warn);font-weight:800}
+.cats{display:flex;gap:14px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{flex:none;width:68px;border:0;background:none;text-align:center;cursor:pointer;color:var(--ink2);font-size:12px;font-weight:700}
+.cat span{width:60px;height:60px;border-radius:50%;background:var(--powder);color:var(--berry);display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+.banner{margin:12px 16px;border-radius:24px;padding:22px 20px;color:#fff;background:linear-gradient(135deg,#7A2E3B,#9A4A58);position:relative;overflow:hidden}
+.banner:before,.banner:after{content:"";position:absolute;border-radius:50%;background:#fff;opacity:.1}
+.banner:before{width:120px;height:120px;right:-30px;top:-30px}.banner:after{width:70px;height:70px;right:50px;bottom:-30px;background:var(--powder);opacity:.2}
+.banner h2{font-size:21px;font-weight:800;line-height:1.2;max-width:230px}.banner p{margin:6px 0 14px;font-size:13px;opacity:.92;max-width:230px}
+.banner button{border:0;border-radius:999px;background:#fff;color:var(--berry);font-weight:800;font-size:14px;padding:10px 18px;cursor:pointer}
+/* карточки товара */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:0 16px}
+.hs{display:flex;gap:12px;overflow-x:auto;padding:0 16px 6px;scrollbar-width:none}.hs::-webkit-scrollbar{display:none}.hs .pc{flex:none;width:158px}
+.pc{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;box-shadow:var(--sh)}
+.ph{position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;color:var(--berry);overflow:hidden}
+.ph.g0{background:var(--g0)}.ph.g1{background:var(--g1)}.ph.g2{background:var(--g2)}.ph.g3{background:var(--g3)}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ph .pe .ic{width:44px;height:44px;opacity:.6}
+.bd{position:absolute;left:8px;top:8px;background:rgba(255,255,255,.94);color:var(--berry);font-size:10px;font-weight:800;border-radius:999px;padding:4px 9px;z-index:1}
+.fv{position:absolute;right:8px;top:8px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.94);color:var(--berry);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:1}
+.fv .ic{width:18px;height:18px}.fv.on .ic{fill:currentColor}.fv.pop{animation:pop .24s ease}
+.pb{padding:10px 12px 12px;display:flex;flex-direction:column;flex:1}
+.pn{font-weight:700;font-size:14px;line-height:1.25;height:2.5em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.pp{font-weight:800;font-size:17px;margin:6px 0 4px}
+.pills{display:flex;flex-wrap:wrap;gap:4px}
+.pills span{background:var(--sand);color:var(--ink2);border-radius:999px;font-size:11px;font-weight:700;padding:3px 8px}
+.pills.big span{font-size:12px;padding:5px 11px}.pills .g{background:rgba(138,154,91,.2);color:var(--olive-d)}.pills .b{background:var(--powder);color:var(--berry)}
+.pbot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px;gap:6px;min-height:44px}
+.pshop{font-size:11px;color:var(--ink3);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.cb{width:36px;height:36px;border-radius:50%;border:0;background:var(--berry);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.cb .ic{width:18px;height:18px}.cb.in{background:var(--olive-d)}.cb.bump{animation:bump .3s ease}
+.oos{font-size:11px;font-weight:700;color:var(--ink3)}
+/* кнопки и поля */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:48px;border:0;border-radius:12px;background:var(--berry);color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin:8px 0}
+.btn:active{background:var(--berry-h)}.btn.ol{background:var(--olive-d)}.btn.gh{background:var(--card);color:var(--ink);border:1px solid var(--line)}.btn.red{background:var(--err)}.btn[disabled]{opacity:.5}
+.btn.sm{height:38px;font-size:13px;width:auto;padding:0 14px;margin:6px 6px 0 0;display:inline-flex}
+.b2{border:1px solid var(--olive-d);background:none;color:var(--olive-d);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;margin:6px 6px 0 0}
+.b2.red{border-color:var(--err);color:var(--err)}.b2.b{border-color:var(--berry);color:var(--berry)}
+.fld{display:block;margin:0 0 12px}.fld>b{display:block;font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:6px}
+.in{width:100%;height:46px;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);outline:none}
+textarea.in{height:84px;padding:10px 14px;resize:none}.in:focus{border-color:var(--berry)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin:0 16px 12px;box-shadow:var(--sh)}
+.seg{display:flex;background:var(--sand);border-radius:14px;padding:4px;margin:0 16px 14px}
+.seg button{flex:1;border:0;background:none;border-radius:10px;padding:10px;font-weight:700;font-size:14px;color:var(--ink2);cursor:pointer}.seg button.on{background:var(--card);color:var(--berry);box-shadow:var(--sh)}
+/* нижняя панель */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;background:var(--card);border-top:1px solid var(--line);padding:6px 4px calc(6px + var(--sab))}
+.tabs button{flex:1;border:0;background:none;color:var(--ink3);font-size:10.5px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;cursor:pointer}
+.tabs button.on{color:var(--berry)}
+.tabs button.sell .circ{width:46px;height:46px;border-radius:50%;background:var(--berry);color:#fff;display:flex;align-items:center;justify-content:center;margin-top:-22px;box-shadow:0 4px 14px rgba(122,46,59,.35);border:3px solid var(--cream)}
+.tabs button.sell{color:var(--berry)}
+/* страницы поверх */
+.pg{position:fixed;inset:0;z-index:20;background:var(--cream);display:none;flex-direction:column;padding-top:var(--sat);animation:slide .22s ease}
+.pg.show{display:flex}
+.phead{display:flex;align-items:center;gap:10px;padding:10px 16px}
+.phead h2{flex:1;text-align:center;font-size:17px;font-weight:800;margin-right:42px}
+.pbody{flex:1;overflow-y:auto;padding-bottom:20px;-webkit-overflow-scrolling:touch}
+.pfoot{padding:10px 16px calc(10px + var(--sab));background:var(--cream);border-top:1px solid var(--line);display:flex;gap:10px;align-items:center}
+.pfoot .btn{margin:0}.pfoot .ibtn{height:48px;width:52px;border-radius:12px;flex:none}
+.hero{aspect-ratio:1/1;position:relative;display:flex;align-items:center;justify-content:center;color:var(--berry)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.hero .ic{width:72px;height:72px;opacity:.5}
+.price{font-size:28px;font-weight:800;color:var(--berry);text-align:center;margin:16px 0 4px}
+.pt{font-size:20px;font-weight:800;text-align:center;margin:0 16px 12px;line-height:1.25}
+.selr{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin:12px 16px}
+.av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#8A9A5B,#6E7C46);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex:none;font-size:17px}
+.av.b{background:linear-gradient(135deg,#B5586C,#7A2E3B);width:68px;height:68px;font-size:28px}
+.grp{font-size:12px;font-weight:800;color:var(--ink2);letter-spacing:.4px;text-transform:uppercase;margin:16px 16px 8px;display:flex;align-items:center;gap:6px}
+.grp .ic{color:var(--olive);width:16px;height:16px}
+.row{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;margin:0 16px 10px}
+.row .th{width:64px;height:64px;border-radius:12px;overflow:hidden;flex:none;position:relative;display:flex;align-items:center;justify-content:center;color:var(--berry)}
+.row .th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.row .t{flex:1;min-width:0}.row .t b{display:block;font-size:14px;line-height:1.25}
+.stp{display:inline-flex;align-items:center;background:var(--sand);border-radius:999px;margin-top:6px}
+.stp button{width:30px;height:30px;border-radius:50%;border:0;background:var(--card);margin:3px;font-size:18px;font-weight:700;color:var(--berry);cursor:pointer;line-height:1}
+.stp span{min-width:26px;text-align:center;font-weight:800}
+.sum{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 16px;margin:12px 16px}
+.sum div{display:flex;justify-content:space-between;padding:5px 0;color:var(--ink2)}
+.sum .tot{border-top:1px dashed var(--line);margin-top:6px;padding-top:10px;font-size:19px;font-weight:800;color:var(--ink)}.sum .tot b{color:var(--berry)}
+.st{display:inline-block;border-radius:999px;font-size:11px;font-weight:800;padding:4px 10px;background:var(--sand);color:var(--ink2)}
+.st.ok{background:rgba(138,154,91,.22);color:var(--olive-d)}.st.wn{background:rgba(212,165,116,.28);color:#8A5A1F}.st.er{background:rgba(184,74,92,.16);color:var(--err)}.st.in{background:rgba(79,116,148,.16);color:var(--info)}
+.empty{text-align:center;padding:36px 28px}.empty h3{font-size:18px;font-weight:800;margin:14px 0 6px}.empty p{margin:0 0 16px;color:var(--ink2);font-size:14px}
+.blob{position:relative;width:132px;height:112px;margin:0 auto}
+.blob i{position:absolute;border-radius:50%;background:var(--powder)}
+.blob i:nth-child(1){width:70px;height:70px;left:8px;top:30px}.blob i:nth-child(2){width:62px;height:62px;left:56px;top:10px}.blob i:nth-child(3){width:58px;height:58px;left:62px;top:50px}.blob i:nth-child(4){width:48px;height:48px;left:0;top:6px}
+.blob .ic{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:40px;height:40px;color:var(--berry);z-index:1}
+.role{display:block;width:calc(100% - 32px);margin:0 16px 14px;background:var(--card);border:2px solid var(--olive);border-radius:24px;padding:18px;text-align:left;cursor:pointer}
+.role.s{border-color:var(--berry)}.role .ico{width:48px;height:48px;border-radius:14px;background:rgba(138,154,91,.2);color:var(--olive-d);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.role.s .ico{background:var(--powder);color:var(--berry)}.role b{font-size:19px;font-weight:800;display:block}.role p{margin:4px 0 14px;color:var(--ink2);font-size:13px}
+.role .go{display:block;text-align:center;border-radius:12px;padding:13px;font-weight:700;color:#fff;background:var(--olive-d)}.role.s .go{background:var(--berry)}
+.menu{display:flex;align-items:center;gap:12px;width:calc(100% - 32px);margin:0 16px 10px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:left;cursor:pointer;font-weight:700;font-size:15px}
+.menu .mi{width:40px;height:40px;border-radius:12px;background:var(--powder);color:var(--berry);display:flex;align-items:center;justify-content:center;flex:none}
+.menu .mi.o{background:rgba(138,154,91,.22);color:var(--olive-d)}.menu span.t{flex:1}.menu small{display:block;color:var(--ink2);font-weight:500;font-size:12px;margin-top:2px}.menu>.ic:last-child{color:var(--ink3);width:18px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 16px 14px}.tiles div{background:var(--card);border:1px solid var(--line);border-radius:16px;text-align:center;padding:12px 4px}.tiles b{display:block;font-size:20px;font-weight:800;color:var(--berry)}.tiles span{font-size:11px;color:var(--ink2);font-weight:600}
+.shopc{margin:0 16px 14px;border-radius:24px;padding:20px;color:#fff;background:linear-gradient(135deg,#8A9A5B,#6E7C46)}
+.shopc h2{font-size:21px;font-weight:800}.shopc p{margin:4px 0 12px;opacity:.92;font-size:13px}.shopc .st{background:rgba(255,255,255,.22);color:#fff}
+.up{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;height:112px;border:2px dashed var(--olive);border-radius:16px;background:var(--cream);color:var(--ink3);font-weight:700;font-size:14px;cursor:pointer;margin-bottom:12px;position:relative;overflow:hidden}
+.up img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 10px}.k{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px}.k b{display:block;font-size:19px;font-weight:800;margin-top:2px}.k.w{grid-column:1/-1}.k.warn{background:rgba(212,165,116,.25);border-color:transparent}
+.bars{display:flex;align-items:flex-end;gap:3px;height:90px;padding:0 16px;overflow:hidden}.bars i{flex:1;background:var(--olive);border-radius:4px 4px 0 0;min-height:3px}
+.hb{display:grid;grid-template-columns:1.4fr 2fr auto;gap:8px;align-items:center;padding:4px 16px;font-size:13px}.hb div{background:var(--sand);border-radius:5px;height:10px}.hb i{display:block;height:100%;background:var(--berry);border-radius:5px}.hb b{font-weight:700}
+.tr{display:grid;grid-template-columns:2.2fr .8fr 1.4fr 1.3fr;gap:6px;padding:9px 16px;border-bottom:1px solid var(--div);font-size:13px;align-items:start}.tr.h{font-weight:800;color:var(--ink3)}.tr.s{grid-template-columns:2fr .8fr .8fr 1.4fr 1fr}
+.toast{position:fixed;top:calc(14px + var(--sat));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--cream);padding:11px 18px;border-radius:14px;display:none;z-index:50;max-width:90%;text-align:center;font-size:14px;font-weight:600}
+.tg{position:absolute;inset:0;display:none}
+.note{margin:0 16px 12px;background:rgba(212,165,116,.25);color:#7A4E14;border-radius:14px;padding:10px 14px;font-size:13px;font-weight:600}
+:root[data-theme="dark"] .note{color:#E8C79B}
+@keyframes pop{50%{transform:scale(1.3)}}@keyframes bump{40%{transform:scale(1.25)}}@keyframes breathe{50%{transform:scale(1.06)}}@keyframes slide{from{transform:translateY(18px);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-logo" viewBox="0 0 60 60"><circle cx="24" cy="34" r="15" stroke="none" fill="currentColor"/><circle cx="40" cy="26" r="11" stroke="none" fill="currentColor"/><circle cx="43" cy="40" r="9" stroke="none" fill="currentColor"/><circle cx="16" cy="24" r="8" stroke="none" fill="currentColor"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v8a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.400 12 20 12 20z"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+<symbol id="i-cart" viewBox="0 0 24 24"><path d="M3 4h2.500l2 11h10l2-8H6"/><circle cx="9" cy="19" r="1.400"/><circle cx="17" cy="19" r="1.400"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.500l4.500 4.500L19 7.500"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h.01"/></symbol>
+<symbol id="i-return" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.600-5.900M4 4v4.500h4.500"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17h.01"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V5M7 10l5-5 5 5M5 19h14"/></symbol>
+<symbol id="i-store" viewBox="0 0 24 24"><path d="M4 9l1-5h14l1 5M5 9v11h14V9M9 20v-6h6v6M3 9h18"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.500"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.500 8-8 9-4.500-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-8"/></symbol>
+<symbol id="i-food" viewBox="0 0 24 24"><path d="M3.500 11h17a8.500 8.500 0 0 1-17 0z"/><path d="M8 7.500c0-1.500 1-2 1-3.500M12.500 7.500c0-1.500 1-2 1-3.500"/></symbol>
+<symbol id="i-cloth" viewBox="0 0 24 24"><path d="M8 4L3 7l2 4 2-1v10h10V10l2 1 2-4-5-3a4 4 0 0 1-8 0z"/></symbol>
+<symbol id="i-med" viewBox="0 0 24 24"><path d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z"/></symbol>
+<symbol id="i-toy" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.500"/><path d="M4 9c5 2.500 11 2.500 16 0M4 15c5-2.500 11-2.500 16 0"/></symbol>
+<symbol id="i-paw" viewBox="0 0 24 24"><circle cx="6.500" cy="10.500" r="1.800"/><circle cx="10" cy="6.500" r="1.800"/><circle cx="14" cy="6.500" r="1.800"/><circle cx="17.500" cy="10.500" r="1.800"/><path d="M8 17c0-3 2-5 4-5s4 2 4 5c0 2-2 2.500-4 2.500S8 19 8 17z"/></symbol>
+<symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></symbol>
+</svg>
+
+<div id="view"></div>
+<nav class="tabs" id="tabs">
+  <button data-a="tab" data-t="home"><svg class="ic"><use href="#i-home"/></svg>Главная</button>
+  <button data-a="tab" data-t="catalog"><svg class="ic"><use href="#i-grid"/></svg>Каталог</button>
+  <button data-a="tab" data-t="fav"><svg class="ic"><use href="#i-heart"/></svg>Избранное</button>
+  <button class="sell" data-a="tab" data-t="sell"><span class="circ"><svg class="ic"><use href="#i-plus"/></svg></span>Продать</button>
+  <button data-a="tab" data-t="profile"><svg class="ic"><use href="#i-user"/></svg>Профиль</button>
+</nav>
+<div class="pg" id="pg">
+  <div class="phead"><button class="ibtn" data-a="pop" id="pback" aria-label="Назад"><svg class="ic"><use href="#i-back"/></svg></button><h2 id="ptitle"></h2></div>
+  <div class="pbody" id="pbody"></div>
+  <div class="pfoot" id="pfoot" style="display:none"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+var SB = "https://dtxekqgdurpzoqckazlp.supabase.co";
+var KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR0eGVrcWdkdXJwem9xY2themxwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NzQ3NTksImV4cCI6MjEwNzQ1MDc1OX0.-c3MzL2JOM_GEbLupzh38p8OSP4FeOUWN3v_Dk4lQVs";
+var $ = function(id){return document.getElementById(id)};
+var tg = window.Telegram && window.Telegram.WebApp;
+
+/* ===== справочники ===== */
+var C = [
+ {n:"Еда и лакомства", s:"Еда", k:"food", t:["Корм","Лакомства"]},
+ {n:"Одежда и обувь", s:"Одежда", k:"cloth", t:["Вязаная одежда","Дождевики","Ботиночки"]},
+ {n:"Для дома", s:"Дом", k:"home", t:["Лежанки","Пледы","Чистящие средства"]},
+ {n:"Аптечка и витамины", s:"Аптечка", k:"med", t:["Лекарства","Наборы витаминов","Первая необходимость"]},
+ {n:"Игрушки", s:"Игрушки", k:"toy", t:["Мячи","Мягкие игрушки","Канаты и грызунки","Интерактивные"]},
+ {n:"Для прогулки", s:"Прогулка", k:"paw", t:["Шлейки","Поводки","Пакеты для уборки"]},
+ {n:"Для ухода", s:"Уход", k:"drop", t:["Шампуни","Кондиционеры","Расчёски","Полотенца","Когтерезы","Зубные пасты и щётки"]}
+];
+var PETS = [["dog","Собаки","🐕"],["cat","Кошки","🐈"],["rodent","Грызуны","🐹"],["bird","Птицы","🦜"],["fish","Рыбки","🐠"],["rept","Рептилии","🦎"]];
+var SVC = {cdek:"СДЭК", yandex:"Яндекс Доставка"};
+var CRN = {y:"Яндекс Доставка", c:"СДЭК"};
+var STG = {"new":["Ждёт подтверждения","wn"],"confirmed":["Подтверждён","ok"],"shipping":["В пути","in"],"delivered":["Доставлен","ok"],"alt":["Предложены изменения","wn"],"cancelled":["Отменён","er"]};
+var RST = {"new":"на рассмотрении","approved":"одобрен","rejected":"отклонён"};
+var RF = ["Не устроил срок доставки","Не устроила цена","Нашёл дешевле в другом месте","Передумал покупать","Ошибся при оформлении заказа","Другая причина"];
+var RR = ["Товар не подошёл по размеру или характеристикам","Брак или повреждение","Не соответствует описанию или фото","Неполная комплектация","Привезли не тот товар","Передумал покупать"];
+var CR = ["Товар не соответствует описанию","Низкое качество или брак","Грубое или недобросовестное общение","Нарушены сроки доставки","Подозрение на мошенничество","Запрещённый товар или недостоверная информация"];
+
+/* ===== помощники ===== */
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function fmt(v){return Math.round(v).toLocaleString("ru-RU")+" ₽"}
+function dru(s){var a=String(s).slice(0,10).split("-");return a[2]+"."+a[1]+"."+a[0]}
+function ymd(d){return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function ic(n,c){return '<svg class="ic'+(c?' '+c:'')+'"><use href="#i-'+n+'"/></svg>'}
+function toast(t){var el=$("toast");el.textContent=t;el.style.display="block";clearTimeout(toast.t);toast.t=setTimeout(function(){el.style.display="none"},2600)}
+function ls(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function hap(t){try{tg.HapticFeedback.impactOccurred(t||"light")}catch(e){}}
+function askOk(msg,cb){ if(tg&&tg.showConfirm){tg.showConfirm(msg,function(ok){if(ok)cb()})} else if(confirm(msg)) cb(); }
+function blob(icon){return '<div class="blob"><i></i><i></i><i></i><i></i>'+ic(icon)+'</div>'}
+function emptyState(icon,title,text,btn){return '<div class="empty">'+blob(icon)+'<h3>'+title+'</h3><p>'+text+'</p>'+(btn||"")+'</div>'}
+
+/* ===== запуск в Telegram: весь экран, тема, «Назад» ===== */
+function applyTheme(){
+  try {
+    document.documentElement.setAttribute("data-theme", tg.colorScheme==="dark" ? "dark" : "light");
+    var bg = getComputedStyle(document.documentElement).getPropertyValue("--cream").trim();
+    if (/^#[0-9a-f]{6}$/i.test(bg)) { if (tg.setHeaderColor) tg.setHeaderColor(bg); if (tg.setBackgroundColor) tg.setBackgroundColor(bg); if (tg.setBottomBarColor) tg.setBottomBarColor(bg); }
+  } catch(e){}
+}
+function backAction(){ if (STK.length) pop(); else if (TAB!=="home") go("home"); syncBack(); }
+function syncBack(){ if (!tg || !tg.BackButton) return; if (STK.length || TAB!=="home") tg.BackButton.show(); else tg.BackButton.hide(); }
+if (tg) { try {
+  tg.ready(); tg.expand();
+  if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+  if (tg.isVersionAtLeast && tg.isVersionAtLeast("8.0") && !tg.isFullscreen && tg.requestFullscreen) tg.requestFullscreen();
+  applyTheme(); tg.onEvent("themeChanged", applyTheme);
+  if (tg.BackButton) { tg.BackButton.onClick(backAction); setInterval(syncBack, 400); }
+} catch(e){} }
+
+/* ===== данные пользователя Telegram ===== */
+var INIT = (tg && tg.initData) || "";
+if (!INIT) { try {
+  INIT = new URLSearchParams(location.hash.slice(1)).get("tgWebAppData") || sessionStorage.getItem("ps_init") || "";
+  if (INIT) sessionStorage.setItem("ps_init", INIT);
+} catch(e){} }
+var TU = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) || null;
+if (!TU) { try { var uu = new URLSearchParams(INIT).get("user"); if (uu) TU = JSON.parse(uu); } catch(e){} }
+
+/* ===== запросы ===== */
+function api(action, data){
+  var ac = new AbortController(); var tm = setTimeout(function(){ac.abort()},25000);
+  return fetch(SB+"/functions/v1/api",{method:"POST",signal:ac.signal,headers:{apikey:KEY,Authorization:"Bearer "+KEY,"Content-Type":"application/json"},
+    body:JSON.stringify(Object.assign({action:action,initData:INIT},data||{}))})
+  .then(function(r){clearTimeout(tm); return r.json().catch(function(){return {}}).then(function(j){
+    if(!r.ok) throw new Error(j.error && j.error.length>3 ? j.error : "Ошибка "+r.status);
+    return j;
+  })})
+  .catch(function(e){ clearTimeout(tm); if(e && e.name==="AbortError") throw new Error("Сервер не отвечает. Попробуйте ещё раз"); throw e; });
+}
+
+/* ===== состояние ===== */
+var P = [], cart = {}, FAV = ls("ps_fav",[]), ME = null, TAB = "home", STK = [], busy = false;
+var F2 = {q:"", c:-1, t:-1, pet:""};
+var CHK = {s:"", v:null, a:"", p:"", d:"", c:""};
+var SS = {}, ORDS = null, PTS = {}, PBY = {}, LMAP = null;
+function byId(id){ for (var i=0;i<P.length;i++) if (P[i].id===id) return P[i]; return null; }
+function count(){ return Object.keys(cart).reduce(function(s,k){return s+cart[k]},0); }
+function sum(){ return Object.keys(cart).reduce(function(s,k){var p=byId(k);return s+(p?p.p*cart[k]:0)},0); }
+function isNew(p){ return p.cr && Date.now()-Date.parse(p.cr) < 7*86400e3; }
+
+function loadDb(){
+  var all = [], page = 0;
+  function next(){
+    var ac = new AbortController(); var tm = setTimeout(function(){ac.abort()},25000);
+    return fetch(SB+"/rest/v1/products?select=id,created_at,category,type,name,price,qty,lead_days,img,pets,descr,shop_name,seller_id,rating_avg,rating_cnt&order=id.desc&limit=1000&offset="+(page*1000),
+      {signal:ac.signal,headers:{apikey:KEY,Authorization:"Bearer "+KEY}})
+      .then(function(r){clearTimeout(tm); if(!r.ok)throw 0; return r.json()})
+      .then(function(rows){ all = all.concat(rows); if(rows.length===1000 && page<19){ page++; return next(); } return all; });
+  }
+  return next().then(function(rows){
+    P = rows.map(function(r){return {id:"d"+r.id,rid:r.id,c:+r.category,t:+r.type,n:r.name,p:+r.price,q:+r.qty,ld:+r.lead_days,img:r.img||null,
+      pets:r.pets?String(r.pets).split(","):[],descr:r.descr||"",shop:r.shop_name||"",sid:r.seller_id,cr:r.created_at,ra:+r.rating_avg||0,rc:+r.rating_cnt||0}});
+    Object.keys(cart).forEach(function(k){if(!byId(k))delete cart[k]});
+    render(); badge();
+  }).catch(function(){toast("Не удалось загрузить каталог")});
+  fetch(SB+"/rest/v1/seller_stats?select=seller_id,rating_avg,rating_cnt&limit=1000",{headers:{apikey:KEY,Authorization:"Bearer "+KEY}})
+    .then(function(r){return r.ok?r.json():[]}).then(function(rows){ SS={}; rows.forEach(function(x){SS[x.seller_id]={a:+x.rating_avg,c:+x.rating_cnt}}); }).catch(function(){});
+}
+
+/* ===== корзина и избранное ===== */
+function badge(){ var n=count(), b=document.querySelectorAll(".cartn"); for (var i=0;i<b.length;i++){ b[i].textContent=n; b[i].style.display=n?"flex":"none"; } }
+function chg(id,d){
+  var p=byId(id); if(!p) return;
+  if (d>0 && (cart[id]||0)>=p.q) return toast("Больше нет в наличии");
+  cart[id]=(cart[id]||0)+d; if(cart[id]<=0) delete cart[id];
+  hap(); badge(); markBtns(id);
+  if (STK.length) repage();
+}
+function markBtns(id){
+  var inC=!!cart[id], b=document.querySelectorAll('[data-cb="'+id+'"]');
+  for (var i=0;i<b.length;i++){ b[i].className="cb"+(inC?" in":"")+" bump"; b[i].innerHTML=ic(inC?"check":"cart"); }
+}
+function toggleFav(id){
+  var i=FAV.indexOf(id); if(i>-1) FAV.splice(i,1); else FAV.push(id);
+  ss("ps_fav",FAV); hap();
+  var on=FAV.indexOf(id)>-1, b=document.querySelectorAll('[data-fv="'+id+'"]');
+  for (var j=0;j<b.length;j++){ b[j].classList.toggle("on",on); b[j].classList.add("pop"); b[j].innerHTML=ic("heart"); }
+  if (TAB==="fav" && !STK.length) render();
+}
+
+/* ===== карточка товара ===== */
+function card(p){
+  var inC=!!cart[p.id], fav=FAV.indexOf(p.id)>-1;
+  var bd = p.q>0&&p.q<=3 ? "Осталось "+p.q : (isNew(p)?"Новинка":"");
+  return '<div class="pc" data-a="prod" data-id="'+p.id+'">'+
+    '<div class="ph g'+(p.c%4)+'">'+(p.img?'<img src="'+esc(p.img)+'" alt="" loading="lazy" decoding="async">':'<span class="pe">'+ic(C[p.c]?C[p.c].k:"paw")+'</span>')+
+      (bd?'<span class="bd">'+bd+'</span>':'')+
+      '<button class="fv'+(fav?' on':'')+'" data-a="fav" data-id="'+p.id+'" data-fv="'+p.id+'" aria-label="В избранное">'+ic("heart")+'</button></div>'+
+    '<div class="pb"><div class="pn">'+esc(p.n)+'</div><div class="pp">'+fmt(p.p)+'</div>'+
+      '<div class="pills"><span>остаток '+p.q+'</span><span>'+p.ld+' дн.</span></div>'+
+      '<div class="pbot">'+(p.rc>0?'<span class="pshop rt">★ '+p.ra.toFixed(1)+' <span style="color:var(--ink3);font-weight:600">('+p.rc+')</span></span>':'<span class="pshop">'+esc(p.shop)+'</span>')+
+      (p.q<=0?'<span class="oos">Нет в наличии</span>':'<button class="cb'+(inC?' in':'')+'" data-a="addcart" data-id="'+p.id+'" data-cb="'+p.id+'" aria-label="В корзину">'+ic(inC?"check":"cart")+'</button>')+
+    '</div></div></div>';
+}
+
+/* ===== навигация: вкладки и страницы поверх ===== */
+function render(){
+  var tabs=document.querySelectorAll("#tabs button");
+  for (var i=0;i<tabs.length;i++) tabs[i].classList.toggle("on", tabs[i].getAttribute("data-t")===TAB);
+  var top = '<div class="top"><div class="logo"><svg><use href="#i-logo"/></svg><span>ПУХ<i>.</i></span></div><button class="ibtn" data-a="cart" aria-label="Корзина">'+ic("cart")+'<span class="n cartn" style="display:none">0</span></button></div>';
+  var v = TAB==="home"?vHome():TAB==="catalog"?vCatalog():TAB==="fav"?vFav():TAB==="sell"?vSell():vProfile();
+  $("view").innerHTML = top + v; badge();
+  if (TAB==="sell") sellPost();
+}
+function go(tab){ STK=[]; $("pg").classList.remove("show"); TAB=tab; render(); window.scrollTo(0,0); syncBack(); if (tab==="sell") sellLoad(); if (tab==="profile") profLoad(); }
+function push(title,r,f,post){ STK.push({t:title,r:r,f:f,post:post}); drawPage(); syncBack(); }
+function pop(){ STK.pop(); if (STK.length) drawPage(); else { $("pg").classList.remove("show"); render(); } syncBack(); }
+function drawPage(){
+  var e=STK[STK.length-1]; if(!e) return;
+  var body=$("pbody"), st=body.scrollTop;
+  $("ptitle").textContent=e.t; body.innerHTML=e.r();
+  var f=e.f?e.f():""; $("pfoot").style.display=f?"flex":"none"; $("pfoot").innerHTML=f;
+  $("pg").classList.add("show"); if (e.keep) body.scrollTop=st;
+  if (e.post) e.post();
+}
+function repage(){ if (STK.length) { STK[STK.length-1].keep=true; drawPage(); } }
+
+/* ===== Главная ===== */
+function vHome(){
+  var rec = P.filter(function(p){return p.q>0}).slice(0,10);
+  var h = '<div class="search">'+ic("search","s")+'<input id="hq" placeholder="Что ищем для питомца?" value="'+esc(F2.q)+'" enterkeyhint="search"></div>';
+  h += '<div class="cats">'+C.map(function(c,i){return '<button class="cat k'+i+'" data-a="cat" data-i="'+i+'"><span>'+ic(c.k)+'</span>'+c.s+'</button>'}).join("")+'</div>';
+  h += '<div class="banner"><h2>Подборка: уют для холодов</h2><p>Лежанки, свитера и домики для всех питомцев</p><button data-a="cat" data-i="2">Открыть →</button></div>';
+  h += '<div class="sec">Рекомендуем <a data-a="tab" data-t="catalog" style="cursor:pointer">Все →</a></div>';
+  h += rec.length ? '<div class="hs">'+rec.map(card).join("")+'</div>' : emptyState("box","Пока нет товаров","Продавцы скоро добавят первые товары. Загляните чуть позже.",'<button class="btn" style="max-width:240px;margin:0 auto" data-a="tab" data-t="sell">Стать продавцом</button>');
+  return h;
+}
+
+/* ===== Каталог ===== */
+function filtered(){
+  var q=F2.q.trim().toLowerCase();
+  return P.filter(function(p){
+    return (F2.c<0||p.c===F2.c) && (F2.t<0||p.t===F2.t) && (!F2.pet||!p.pets.length||p.pets.indexOf(F2.pet)>-1) &&
+      (!q||(p.n+" "+(C[p.c]?C[p.c].t[p.t]:"")+" "+p.shop).toLowerCase().indexOf(q)>-1);
+  });
+}
+function vCatalog(){
+  var h = '<div class="ttl">Каталог</div><div class="search">'+ic("search","s")+'<input id="cq" placeholder="Поиск по каталогу" value="'+esc(F2.q)+'"></div>';
+  h += '<div class="chips"><button class="chip a'+(!F2.pet?' on':'')+'" data-a="pet" data-k="">Все</button>'+PETS.map(function(x){return '<button class="chip a'+(F2.pet===x[0]?' on':'')+'" data-a="pet" data-k="'+x[0]+'">'+x[2]+' '+x[1]+'</button>'}).join("")+'</div>';
+  h += '<div class="chips"><button class="chip c'+(F2.c<0?' on':'')+'" data-a="cat2" data-i="-1">Все категории</button>'+C.map(function(c,i){return '<button class="chip c'+(F2.c===i?' on':'')+'" data-a="cat2" data-i="'+i+'">'+c.s+'</button>'}).join("")+'</div>';
+  if (F2.c>=0) h += '<div class="chips"><button class="chip t'+(F2.t<0?' on':'')+'" data-a="typ" data-i="-1">Все</button>'+C[F2.c].t.map(function(t,i){return '<button class="chip t'+(F2.t===i?' on':'')+'" data-a="typ" data-i="'+i+'">'+t+'</button>'}).join("")+'</div>';
+  var list = filtered();
+  h += '<div id="cgrid">'+(list.length ? '<div class="grid" style="margin-top:4px">'+list.map(card).join("")+'</div>' : emptyState("search","Ничего не нашли","Попробуйте изменить фильтры или поисковый запрос."))+'</div>';
+  return h;
+}
+
+/* ===== Избранное ===== */
+function vFav(){
+  var list = P.filter(function(p){return FAV.indexOf(p.id)>-1});
+  return '<div class="ttl">Избранное</div>' + (list.length ? '<div class="grid">'+list.map(card).join("")+'</div>' :
+    emptyState("heart","Здесь пока пусто","Сохраняйте товары, которые приглянулись, — они появятся тут.",'<button class="btn" style="max-width:240px;margin:0 auto" data-a="tab" data-t="catalog">В каталог</button>'));
+}
+
+/* ===== Профиль ===== */
+var PS = {orders:null};
+function profLoad(){
+  if (!INIT) return;
+  api("me").then(function(j){ ME=j; if (TAB==="profile"&&!STK.length) render(); }).catch(function(){});
+  api("my_orders").then(function(j){ ORDS=j.orders; PS.orders=j.orders.length; if (TAB==="profile"&&!STK.length) render(); }).catch(function(){});
+}
+function vProfile(){
+  var nm = TU ? ((TU.first_name||"")+" "+(TU.last_name||"")).trim() || "Покупатель" : "Гость";
+  var role = ls("ps_role","buyer");
+  var h = '<div style="display:flex;gap:14px;align-items:center;margin:8px 16px 16px"><div class="av b">'+esc(nm.charAt(0).toUpperCase())+'</div><div><h1 style="font-size:20px;font-weight:800">'+esc(nm)+'</h1><div class="meta">'+(TU&&TU.username?'@'+esc(TU.username):'Пользователь Telegram')+'</div></div></div>';
+  h += '<div class="seg"><button class="'+(role==="buyer"?'on':'')+'" data-a="role" data-r="buyer">Покупатель</button><button class="'+(role==="seller"?'on':'')+'" data-a="role" data-r="seller">Продавец</button></div>';
+  h += '<div class="tiles"><div><b>'+(PS.orders==null?"—":PS.orders)+'</b><span>Покупки</span></div><div><b>'+FAV.length+'</b><span>Избранное</span></div><div><b>'+count()+'</b><span>В корзине</span></div></div>';
+  h += '<button class="menu" data-a="orders"><span class="mi">'+ic("box")+'</span><span class="t">Мои заказы<small>Статусы, отказ от товаров</small></span>'+ic("chev")+'</button>';
+  h += '<button class="menu" data-a="support"><span class="mi o">'+ic("help")+'</span><span class="t">Поддержка, возврат, жалоба<small>Поможем с любым заказом</small></span>'+ic("chev")+'</button>';
+  h += '<button class="menu" data-a="tab" data-t="sell"><span class="mi o">'+ic("store")+'</span><span class="t">Кабинет продавца<small>Товары, продажи, статистика</small></span>'+ic("chev")+'</button>';
+  if (ME && ME.admin) h += '<button class="menu" data-a="admin"><span class="mi">'+ic("shield")+'</span><span class="t">Админ-панель<small>Продавцы, жалобы, аналитика</small></span>'+ic("chev")+'</button>';
+  return h;
+}
+
+/* ===== Выбор роли (при первом запуске) ===== */
+function roleScreen(){
+  $("view").innerHTML = '<div class="top"><div class="logo"><svg><use href="#i-logo"/></svg><span>ПУХ<i>.</i></span></div></div>'+
+    '<h1 style="text-align:center;font-size:24px;font-weight:800;margin:14px 24px 8px;line-height:1.2">Как вы хотите использовать маркетплейс?</h1>'+
+    '<p class="meta" style="text-align:center;margin:0 28px 20px">Выберите подходящий вариант. При необходимости вы сможете пользоваться возможностями обеих ролей.</p>'+
+    '<button class="role" data-a="role" data-r="buyer"><div class="ico">'+ic("cart")+'</div><b>Покупатель</b><p>Находите товары для питомцев, выбирайте подходящие предложения и оформляйте заказы.</p><span class="go">Я покупатель</span></button>'+
+    '<button class="role s" data-a="role" data-r="seller"><div class="ico">'+ic("store")+'</div><b>Продавец</b><p>Публикуйте товары, принимайте заказы и следите за продажами.</p><span class="go">Я продавец</span></button>';
+  document.querySelector("#tabs").style.display="none";
+}
+
+/* ===== Страница товара ===== */
+function pProduct(id){
+  var p=byId(id); if(!p) return;
+  push("Товар", function(){
+    var q=cart[id]||0, fav=FAV.indexOf(id)>-1;
+    return '<div class="hero ph g'+(p.c%4)+'" style="aspect-ratio:1/1">'+(p.img?'<img src="'+esc(p.img)+'" alt="">':ic(C[p.c].k))+'</div>'+
+      '<div class="price">'+fmt(p.p)+'</div><div class="pt">'+esc(p.n)+'</div>'+(p.rc>0?'<div class="rt" style="text-align:center;margin:-4px 0 10px">★ '+p.ra.toFixed(1)+' <span class="meta">· '+p.rc+' оценок</span></div>':'')+
+      '<div class="pills big" style="justify-content:center;padding:0 16px">'+(isNew(p)?'<span class="b">Новинка</span>':'')+'<span class="g">'+(p.q>0?'В наличии · '+p.q+' шт.':'Нет в наличии')+'</span><span>Доставка от '+p.ld+' дн.</span></div>'+
+      '<div class="selr"><div class="av">'+esc((p.shop||"П").charAt(0).toUpperCase())+'</div><div><b>'+esc(p.shop||"Продавец")+'</b><div class="meta" style="color:var(--olive-d);font-weight:700">'+(SS[p.sid]&&SS[p.sid].c?'<span class="rt">★ '+SS[p.sid].a.toFixed(1)+'</span> · '+SS[p.sid].c+' оценок · ':'')+ic("shield","s")+' Проверенный</div></div></div>'+
+      (p.descr?'<div class="wrap meta" style="font-size:14px;color:var(--ink);margin:10px 0">'+esc(p.descr).replace(/\n/g,"<br>")+'</div>':'')+
+      '<div class="wrap meta">'+esc(C[p.c].n)+' · '+esc(C[p.c].t[p.t]||"")+(p.pets.length?' · '+p.pets.map(function(k){var x=PETS.filter(function(z){return z[0]===k})[0];return x?x[1]:""}).join(", "):'')+'</div>';
+  }, function(){
+    var q=cart[id]||0, fav=FAV.indexOf(id)>-1;
+    return '<button class="ibtn fv'+(fav?' on':'')+'" style="position:static;background:var(--card);border:1px solid var(--line)" data-a="fav" data-id="'+id+'" data-fv="'+id+'">'+ic("heart")+'</button>'+
+      (p.q<=0?'<button class="btn" disabled>Нет в наличии</button>':q?'<button class="btn ol" data-a="cart">Перейти в корзину · '+q+' шт.</button>':'<button class="btn" data-a="addcart" data-id="'+id+'">В корзину · '+fmt(p.p)+'</button>');
+  });
+}
+
+/* ===== Корзина ===== */
+function pCart(){
+  push("Корзина", function(){
+    var ids=Object.keys(cart); if(!ids.length) return emptyState("cart","Корзина пуста","Добавьте товары из каталога.",'<button class="btn" style="max-width:240px;margin:0 auto" data-a="tab" data-t="catalog">В каталог</button>');
+    var g={}; ids.forEach(function(id){var p=byId(id); if(p) (g[p.sid]=g[p.sid]||{shop:p.shop,items:[]}).items.push(p)});
+    var h="", n=0;
+    Object.keys(g).forEach(function(k){
+      h += '<div class="grp">'+ic("store")+'Мастерская «'+esc(g[k].shop||"продавца")+'»</div>';
+      g[k].items.forEach(function(p){ n+=cart[p.id];
+        h += '<div class="row"><div class="th ph g'+(p.c%4)+'">'+(p.img?'<img src="'+esc(p.img)+'" alt="">':ic(C[p.c].k))+'</div><div class="t"><b>'+esc(p.n)+'</b><div style="font-weight:800;color:var(--berry)">'+fmt(p.p)+'</div>'+
+          '<div class="stp"><button data-a="sub" data-id="'+p.id+'">−</button><span>'+cart[p.id]+'</span><button data-a="addcart" data-id="'+p.id+'">+</button></div></div></div>';
+      });
+    });
+    return h+'<div class="sum"><div><span>Товары ('+n+' шт.)</span><span>'+fmt(sum())+'</span></div><div class="tot"><span>Итого</span><b>'+fmt(sum())+'</b></div></div>';
+  }, function(){ return count()?'<button class="btn" data-a="checkout">Оформить заказ</button>':''; });
+}
+
+/* ===== Оформление ===== */
+function earliest(){ var m=1; Object.keys(cart).forEach(function(k){var p=byId(k); if(p&&p.ld>m) m=p.ld}); var d=new Date(); d.setDate(d.getDate()+m); return ymd(d); }
+function pCheckout(){
+  var e=earliest(); if(!CHK.d||CHK.d<e) CHK.d=e;
+  push("Доставка", function(){
+    var h='<div class="wrap" style="padding-top:6px"><div class="fld"><b>Способ доставки</b><div class="chips" style="padding:0">'+
+      [["cdek","СДЭК"],["yandex","Яндекс Доставка"],["manual","Курьером"]].map(function(x){return '<button class="chip'+(CHK.s===x[0]?' on':'')+'" data-a="svc" data-s="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</div></div>';
+    if (CHK.s==="cdek"||CHK.s==="yandex") {
+      if (CHK.v) h+='<div class="card" style="margin:0 0 12px"><div class="cap">Пункт выдачи · '+SVC[CHK.s]+'</div><b>'+esc(CHK.v.name)+'</b><div class="meta">'+esc(CHK.v.address)+'</div></div>';
+      h+='<button class="btn gh" data-a="map">'+ic("pin")+(CHK.v?'Выбрать другой пункт':'Выбрать пункт выдачи на карте')+'</button>';
+    } else if (CHK.s==="manual") h+='<label class="fld"><b>Адрес доставки</b><input class="in" data-f="a" placeholder="Город, улица, дом, квартира" value="'+esc(CHK.a)+'"></label>';
+    h+='<label class="fld"><b>Дата доставки</b><input class="in" type="date" data-f="d" min="'+e+'" value="'+CHK.d+'"><span class="cap">Учтён минимальный срок продавцов: с '+dru(e)+'</span></label>'+
+      '<label class="fld"><b>Номер телефона</b><input class="in" data-f="p" inputmode="tel" placeholder="+7 (900) 123-45-67" value="'+esc(CHK.p)+'"></label>'+
+      '<label class="fld"><b>Комментарий к заказу <span class="cap">необязательно</span></b><textarea class="in" data-f="c" placeholder="Дополнительная информация для продавца">'+esc(CHK.c)+'</textarea></label></div>'+
+      '<div class="sum"><div><span>Товары ('+count()+' шт.)</span><span>'+fmt(sum())+'</span></div><div class="tot"><span>Итого</span><b>'+fmt(sum())+'</b></div></div>';
+    return h;
+  }, function(){ return '<button class="btn" data-a="co">Подтвердить заказ</button>'; });
+}
+function checkout(){
+  if (!INIT) return toast("Откройте магазин кнопкой меню у бота внутри Telegram");
+  if (!CHK.s) return toast("Выберите способ доставки");
+  if (CHK.s==="manual" && CHK.a.trim().length<6) return toast("Введите адрес доставки");
+  if (CHK.s!=="manual" && !CHK.v) return toast("Выберите пункт выдачи на карте");
+  if (CHK.p.replace(/\D/g,"").length<10) return toast("Введите телефон");
+  if (busy) return; busy=true; toast("Оформляем заказ…");
+  var items=Object.keys(cart).map(function(id){return {id:id,qty:cart[id]}});
+  api("order",{items:items,address:CHK.s==="manual"?CHK.a:"",delivery:{service:CHK.s,pvz_id:CHK.v?CHK.v.id:null},phone:CHK.p,date:CHK.d,comment:CHK.c})
+    .then(function(){ cart={}; CHK.d=""; CHK.c=""; ORDS=null; hap("medium"); STK=[]; push("", pDone, null); loadDb(); })
+    .catch(function(e){toast(e.message)}).then(function(){busy=false});
+}
+function pDone(){
+  return '<div class="empty" style="padding-top:60px">'+blob("check")+'<h3 style="font-size:24px">Заказ оформлен!</h3><p>Мы передали его продавцу. Как только товар будет готов к отправке — пришлём уведомление.</p>'+
+    '<button class="btn" data-a="orders">Следить за заказом</button><button class="btn gh" data-a="home2">На главную</button></div>';
+}
+
+/* ===== Пункты выдачи (карта) ===== */
+function fetchPts(c){
+  if (PTS[c]) return Promise.resolve(PTS[c]);
+  var all=[], page=0;
+  function next(){
+    return fetch(SB+"/rest/v1/pickup_points?select=id,name,address,lat,lon,work_time&carrier=eq."+c+"&order=id&limit=1000&offset="+(page*1000),{headers:{apikey:KEY,Authorization:"Bearer "+KEY}})
+      .then(function(r){if(!r.ok)throw 0; return r.json()})
+      .then(function(rows){ all=all.concat(rows); if(rows.length===1000&&page<14){page++;return next()} return all; });
+  }
+  return next().then(function(a){ a.forEach(function(p){PBY[p.id]=p}); PTS[c]=a; return a; });
+}
+function loadLeaflet(cb){
+  if (window.L && L.markerClusterGroup) return cb();
+  var base="https://cdnjs.cloudflare.com/ajax/libs/";
+  ["leaflet/1.9.4/leaflet.min.css","leaflet.markercluster/1.5.3/MarkerCluster.css","leaflet.markercluster/1.5.3/MarkerCluster.Default.css"].forEach(function(u){var l=document.createElement("link");l.rel="stylesheet";l.href=base+u;document.head.appendChild(l)});
+  var s1=document.createElement("script"); s1.src=base+"leaflet/1.9.4/leaflet.min.js";
+  s1.onload=function(){var s2=document.createElement("script");s2.src=base+"leaflet.markercluster/1.5.3/leaflet.markercluster.js";s2.onload=cb;s2.onerror=function(){toast("Не удалось загрузить карту")};document.head.appendChild(s2)};
+  s1.onerror=function(){toast("Не удалось загрузить карту")}; document.head.appendChild(s1);
+}
+function plist(arr){
+  var el=$("plist"); if(!el) return;
+  el.innerHTML=arr.slice(0,30).map(function(p){return '<div class="row"><div class="t"><b>'+esc(p.name)+'</b><div class="meta">'+esc(p.address)+(p.work_time?' · '+esc(p.work_time):'')+'</div></div><button class="b2 b" data-a="pick" data-id="'+esc(p.id)+'">Выбрать</button></div>'}).join("")+(arr.length>30?'<div class="meta wrap">Показаны первые 30 из '+arr.length+'. Уточните поиск.</div>':'');
+}
+function pMap(){
+  var c=CHK.s;
+  push("Пункты выдачи · "+SVC[c], function(){
+    return '<div class="wrap"><label class="search" style="margin:4px 0 10px">'+ic("search","s")+'<input id="mq" placeholder="Поиск по адресу или названию" autocomplete="off"></label><div id="map" style="height:300px;border-radius:16px;margin-bottom:12px;background:var(--sand)"></div></div><div id="plist"></div>';
+  }, null, function(){
+    fetchPts(c).then(function(pts){
+      if(!pts.length){ $("map").innerHTML='<div class="empty">Пункты выдачи '+SVC[c]+' пока не загружены. Выберите другой способ или «Курьером».</div>'; return; }
+      loadLeaflet(function(){
+        if(LMAP){LMAP.remove();LMAP=null}
+        if(!$("map")) return;
+        LMAP=L.map("map").setView([55.75,37.62],9);
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"© OpenStreetMap"}).addTo(LMAP);
+        var cl=L.markerClusterGroup();
+        pts.forEach(function(p){var m=L.marker([p.lat,p.lon]); m.bindPopup('<b>'+esc(p.name)+'</b><br>'+esc(p.address)+(p.work_time?'<br>'+esc(p.work_time):'')+'<br><button class="btn sm" data-a="pick" data-id="'+esc(p.id)+'">Выбрать</button>'); cl.addLayer(m)});
+        LMAP.addLayer(cl); plist(pts);
+        $("mq").oninput=function(){var q=this.value.trim().toLowerCase(); plist(q?pts.filter(function(p){return (p.name+" "+p.address).toLowerCase().indexOf(q)>-1}):pts)};
+      });
+    }).catch(function(){toast("Не удалось загрузить пункты выдачи")});
+  });
+}
+
+/* ===== Заказы покупателя ===== */
+function loadOrders(done){
+  api("my_orders").then(function(j){ ORDS=j.orders; PS.orders=j.orders.length; if(done) done(); repage(); }).catch(function(e){ORDS=[]; toast(e.message); repage();});
+}
+function stPill(s){var x=STG[s]||["",""]; return '<span class="st '+x[1]+'">'+x[0]+'</span>';}
+function orderCard(o, actions){
+  return '<div class="card" style="margin:0 16px 12px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>Заказ №'+o.id+'</b>'+stPill(o.status)+'</div>'+
+    '<div class="meta" style="margin:2px 0 8px">'+esc(o.shop_name||"")+'</div>'+
+    o.items.map(function(i){return '<div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:2px 0"><span>'+esc(i.name)+' × '+i.qty+'</span><span class="meta">'+fmt(i.price*i.qty)+'</span></div>'}).join("")+
+    '<div style="display:flex;justify-content:space-between;border-top:1px dashed var(--line);margin-top:8px;padding-top:8px"><span class="meta">Доставка '+dru(o.delivery_date)+'</span><b>'+fmt(+o.total)+'</b></div>'+
+    (o.cancel_reason?'<div class="meta" style="margin-top:6px">Причина: '+esc(o.cancel_reason)+'</div>':'')+
+    (o.track?'<div class="meta" style="margin-top:6px">'+esc(CRN[o.carrier]||"")+' · трек: <b>'+esc(o.track)+'</b></div>':'')+
+    (o.ret?'<div class="meta" style="margin-top:6px">Возврат: '+RST[o.ret]+'</div>':'')+
+    (actions?'<div>'+actions+'</div>':'')+'</div>';
+}
+function pOrders(){
+  if (!INIT) return toast("Откройте магазин кнопкой меню у бота внутри Telegram");
+  ORDS=null; push("Мои заказы", function(){
+    if (ORDS===null) return '<div class="empty"><p>Загружаем…</p></div>';
+    if (!ORDS.length) return emptyState("box","Заказов пока нет","Оформите первый заказ — он появится здесь.",'<button class="btn" style="max-width:240px;margin:0 auto" data-a="tab" data-t="catalog">В каталог</button>');
+    return '<div style="padding-top:6px"></div>'+ORDS.map(function(o){
+      var can=o.status==="new"||o.status==="confirmed"||o.status==="shipping";
+      return orderCard(o,(can?'<button class="b2 red" data-a="rf" data-id="'+o.id+'">Отказаться от товаров</button>':'')+
+        (o.status==="delivered"&&!o.rated?'<button class="b2 b" data-a="rate" data-id="'+o.id+'">★ Оценить</button>':'')+(o.status==="delivered"&&!o.ret?'<button class="b2" data-a="rtn" data-id="'+o.id+'">Вернуть</button>':'')+
+        (!o.cmp?'<button class="b2 b" data-a="cmp" data-id="'+o.id+'">Пожаловаться</button>':'')+
+        '<button class="b2 b" data-a="sup" data-id="'+o.id+'">Поддержка</button>');
+    }).join("");
+  }, function(){ return '<button class="btn gh" data-a="sup" data-id="0">'+ic("help")+'Связаться с поддержкой</button>'; });
+  loadOrders();
+}
+function orderById(id){ return (ORDS||[]).filter(function(x){return x.id===id})[0]; }
+
+/* ===== Поддержка, возврат, жалоба ===== */
+function pSupport(){
+  push("Поддержка", function(){
+    return '<div style="padding-top:6px"></div>'+
+      '<button class="menu" data-a="sup" data-id="0"><span class="mi">'+ic("help")+'</span><span class="t">Связаться с поддержкой<small>Опишите проблему, укажите заказ</small></span>'+ic("chev")+'</button>'+
+      '<button class="menu" data-a="pk" data-k="ret"><span class="mi o">'+ic("return")+'</span><span class="t">Возврат товара<small>Выбор заказа → причина</small></span>'+ic("chev")+'</button>'+
+      '<button class="menu" data-a="pk" data-k="cmp"><span class="mi">'+ic("alert")+'</span><span class="t">Пожаловаться<small>На товар или продавца</small></span>'+ic("chev")+'</button>'+
+      '<div class="note" style="margin-top:14px">Корма и лакомства возврату не подлежат.</div>';
+  }, null);
+}
+function pPick(kind){
+  ORDS=null; push(kind==="ret"?"Какой заказ вернуть?":"На какой заказ пожаловаться?", function(){
+    if (ORDS===null) return '<div class="empty"><p>Загружаем…</p></div>';
+    var list=ORDS.filter(function(o){return kind==="ret"?(o.status==="delivered"&&!o.ret):!o.cmp});
+    if(!list.length) return emptyState(kind==="ret"?"return":"alert","Нет подходящих заказов",kind==="ret"?"Вернуть можно доставленный заказ.":"Жалоба возможна по любому заказу, на который вы ещё не жаловались.");
+    return '<div style="padding-top:6px"></div>'+list.map(function(o){return orderCard(o,'<button class="btn sm" data-a="'+(kind==="ret"?"rtn":"cmp")+'" data-id="'+o.id+'">Выбрать</button>')}).join("");
+  }, null);
+  loadOrders();
+}
+function selList(o, disableFn){
+  return o.items.map(function(i){
+    var no=disableFn&&disableFn(i);
+    return '<label class="row" style="'+(no?'opacity:.55':'cursor:pointer')+'"><input type="checkbox" class="rti" value="'+i.id+'"'+(no?' disabled':' checked')+' style="width:20px;height:20px;accent-color:var(--berry)"><div class="t"><b>'+esc(i.name)+'</b><div class="meta">× '+i.qty+' · '+fmt(i.price*i.qty)+(no?' · <b>возврату не подлежит</b>':'')+'</div></div></label>';
+  }).join("");
+}
+function opts(list,ph){return '<option value="">'+ph+'</option>'+list.map(function(r){return '<option>'+r+'</option>'}).join("")}
+function pRefuse(id){
+  var o=orderById(id); if(!o) return;
+  push("Отказ от товаров", function(){
+    return '<div style="padding-top:6px"></div>'+(o.status==="shipping"?'<div class="note">Заказ уже в пути: товар вернётся продавцу, это может занять время.</div>':'')+
+      '<div class="wrap meta" style="margin-bottom:8px">Заказ №'+id+'. Отметьте позиции, от которых отказываетесь:</div>'+selList(o)+
+      '<div class="wrap"><label class="fld"><b>Причина</b><select class="in" id="rfr">'+opts(RF,"— выберите причину —")+'</select></label></div>';
+  }, function(){ return '<button class="btn red" data-a="rfgo" data-id="'+id+'">Отказаться</button>'; });
+}
+function doRefuse(id){
+  var ids=[].slice.call(document.querySelectorAll(".rti")).filter(function(c){return c.checked}).map(function(c){return +c.value});
+  if(!ids.length) return toast("Выберите хотя бы одну позицию");
+  if(busy) return; busy=true;
+  api("cancel_order",{order_id:id,item_ids:ids,reason:$("rfr").value}).then(function(j){ toast(j.full?"Заказ отменён":"Позиции убраны из заказа"); loadDb(); pop(); loadOrders(); })
+    .catch(function(e){toast(e.message)}).then(function(){busy=false});
+}
+function pReturn(id){
+  var o=orderById(id); if(!o) return;
+  var can=o.items.filter(function(i){return i.cat!==0}).length;
+  push("Возврат заказа", function(){
+    return '<div style="padding-top:6px"></div><div class="note">⚠️ Корма и лакомства возврату не подлежат</div><div class="wrap meta" style="margin-bottom:8px">Заказ №'+id+'. Отметьте товары для возврата:</div>'+
+      selList(o,function(i){return i.cat===0})+
+      (can?'<div class="wrap"><label class="fld"><b>Причина возврата</b><select class="in" id="rtr">'+opts(RR,"— выберите причину —")+'</select></label>'+
+      '<label class="fld"><b>Своя причина <span class="cap">необязательно</span></b><input class="in" id="rtc" placeholder="Если не подходит ни одна из причин"></label></div>':'<div class="wrap meta">В этом заказе нет товаров, которые можно вернуть.</div>');
+  }, can?function(){return '<button class="btn" data-a="rtgo" data-id="'+id+'">Отправить запрос на возврат</button>'}:null);
+}
+function doReturn(id){
+  var ids=[].slice.call(document.querySelectorAll(".rti")).filter(function(c){return c.checked}).map(function(c){return +c.value});
+  if(!ids.length) return toast("Выберите хотя бы одну позицию");
+  var r=$("rtr").value, c=$("rtc").value.trim();
+  if(!r&&c.length<5) return toast("Выберите причину или опишите её своими словами");
+  if(busy) return; busy=true;
+  api("return_order",{order_id:id,item_ids:ids,reason:r,comment:c}).then(function(){toast("Запрос на возврат отправлен продавцу"); pop(); loadOrders()})
+    .catch(function(e){toast(e.message)}).then(function(){busy=false});
+}
+function pComplaint(id){
+  push("Жалоба на продавца", function(){
+    return '<div style="padding-top:6px"></div><div class="wrap meta" style="margin-bottom:10px">Заказ №'+id+'. Продавец увидит причину и ваш комментарий, но не ваши данные. Жалобу рассмотрит команда платформы.</div>'+
+      '<div class="wrap"><label class="fld"><b>Причина</b><select class="in" id="cpr">'+opts(CR,"— выберите причину —")+'</select></label>'+
+      '<label class="fld"><b>Комментарий <span class="cap">необязательно</span></b><textarea class="in" id="cpc" placeholder="Опишите ситуацию"></textarea></label></div>';
+  }, function(){ return '<button class="btn" data-a="cmpgo" data-id="'+id+'">Отправить жалобу</button>'; });
+}
+function doComplaint(id){
+  var r=$("cpr").value, c=$("cpc").value.trim();
+  if(!r&&c.length<5) return toast("Выберите причину или опишите проблему");
+  if(busy) return; busy=true;
+  api("complain",{order_id:id,reason:r,comment:c}).then(function(){toast("Жалоба отправлена"); pop(); loadOrders()})
+    .catch(function(e){toast(e.message)}).then(function(){busy=false});
+}
+var RT = {id:0, v:{}, c:""};
+function starsInput(key){ var v=RT.v[key]||0; return '<div class="stars">'+[1,2,3,4,5].map(function(n){return '<button data-a="star" data-k="'+key+'" data-v="'+n+'" class="'+(n<=v?'on':'')+'" aria-label="'+n+'">★</button>'}).join("")+'</div>'; }
+function pRate(id){
+  var o=orderById(id); if(!o) return; RT={id:id,v:{},c:""};
+  push("Оценка заказа", function(){
+    return '<div style="padding-top:6px"></div><div class="card"><b>Продавец «'+esc(o.shop_name||"")+'»</b><div class="meta" style="margin-bottom:8px">Как всё прошло?</div>'+starsInput("s")+'</div>'+
+      o.items.map(function(i){return '<div class="card"><b>'+esc(i.name)+'</b><div class="meta" style="margin-bottom:8px">Оцените товар</div>'+starsInput("p"+i.id)+'</div>'}).join("")+
+      '<div class="wrap"><label class="fld"><b>Комментарий <span class="cap">необязательно</span></b><textarea class="in" id="rtxt" placeholder="Что понравилось или что можно улучшить">'+esc(RT.c)+'</textarea></label></div>';
+  }, function(){ return '<button class="btn" data-a="ratego">Отправить оценку</button>'; });
+}
+function doRate(){
+  var prods=orderById(RT.id).items.filter(function(i){return RT.v["p"+i.id]}).map(function(i){return {id:i.id,rating:RT.v["p"+i.id]}});
+  if(!RT.v.s && !prods.length) return toast("Поставьте хотя бы одну оценку");
+  if(busy) return; busy=true;
+  api("rate",{order_id:RT.id,seller:RT.v.s||0,products:prods,comment:RT.c}).then(function(){toast("Спасибо за оценку!"); pop(); loadOrders(); loadDb()})
+    .catch(function(e){toast(e.message)}).then(function(){busy=false});
+}
+function askSupport(id){
+  api("support_start",{order_id:id}).then(function(){toast("Откройте чат с ботом и нажмите «Начать чат»"); if(tg&&tg.close) setTimeout(function(){tg.close()},1200)}).catch(function(e){toast(e.message)});
+}
+
+/* ===== Кабинет продавца ===== */
+var SELL = {me:null, mine:null, stats:null, cmp:null}, PF = {n:"",p:"",q:"",ld:"2",c:0,t:0,pets:[],d:""}, RG = {s:"",st:"Самозанятый",i:"",p:""}, photo = "", MYF = "all", SP = 30;
+
+function sellLoad(){
+  if (!INIT) return;
+  api("me").then(function(j){
+    SELL.me=j; ME=j; if (TAB==="sell"&&!STK.length) render();
+    var sl=j.seller; if (sl&&sl.approved&&!sl.blocked){ loadMine(); loadSellerStats(); loadMyComplaints(); }
+  }).catch(function(e){toast(e.message)});
+}
+function sellPost(){}
+function vSell(){
+  var h='<div class="ttl">Кабинет продавца</div>';
+  if (!INIT) return h+emptyState("store","Откройте магазин в Telegram","Кабинет продавца доступен внутри Telegram: запустите приложение кнопкой в профиле бота.");
+  if (!SELL.me) return h+'<div class="empty"><p>Загружаем…</p></div>';
+  var sl=SELL.me.seller;
+  if (!sl) return h+regForm();
+  if (sl.blocked) return h+emptyState("alert","Магазин заблокирован","Администратор приостановил работу магазина. Обратитесь в поддержку для выяснения обстоятельств.",'<button class="btn" style="max-width:260px;margin:0 auto" data-a="sup" data-id="0">Связаться с поддержкой</button>');
+  if (!sl.approved) return h+emptyState("shield","Заявка на проверке","Проверка занимает некоторое время. Мы пришлём сообщение от бота, когда доступ откроется.",'<button class="btn gh" style="max-width:260px;margin:0 auto" data-a="sellref">Обновить статус</button>');
+  h+='<div class="shopc"><h2>Мастерская «'+esc(sl.shop_name)+'»</h2><p>Управляйте товарами и отслеживайте продажи</p><span class="st">Активный продавец</span></div>';
+  h+=prodForm()+myProducts()+
+    '<div class="sec">Жалобы на магазин</div><div class="wrap meta" style="margin:-4px 0 8px">Отвечать на жалобы можно только в чате с ботом. Данные покупателя вам не показываются.</div><div id="scmp">'+cmpHtml()+'</div>'+
+    '<div class="sec">Статистика</div><div id="sstats">'+(SELL.stats?statsHtml(SELL.stats,false,0):'<div class="empty"><p>Загружаем…</p></div>')+'</div>'+
+    '<div class="wrap"><button class="btn gh" data-a="sup" data-id="0">'+ic("help")+'Связаться с поддержкой</button></div>';
+  return h;
+}
+function regForm(){
+  return '<div class="wrap meta" style="margin:-6px 0 12px">Заполните данные. Мы проверим их и откроем доступ к публикации товаров.</div><div class="card"><div class="two" style="grid-template-columns:1fr">'+
+    '<label class="fld"><b>Название магазина</b><input class="in" data-rg="s" value="'+esc(RG.s)+'" placeholder="Например, Тёплый бок"></label>'+
+    '<label class="fld"><b>Статус</b><select class="in" data-rg="st">'+["Самозанятый","ИП","ООО"].map(function(x){return '<option'+(RG.st===x?' selected':'')+'>'+x+'</option>'}).join("")+'</select></label>'+
+    '<label class="fld"><b>ИНН</b><input class="in" data-rg="i" inputmode="numeric" value="'+esc(RG.i)+'" placeholder="10 или 12 цифр"></label>'+
+    '<label class="fld"><b>Телефон</b><input class="in" data-rg="p" inputmode="tel" value="'+esc(RG.p)+'" placeholder="+7 (900) 123-45-67"></label></div>'+
+    '<button class="btn" data-a="reg">Отправить заявку</button></div>';
+}
+function register(){
+  if(busy) return; busy=true;
+  api("register",{shop_name:RG.s,status:RG.st,inn:RG.i,phone:RG.p}).then(function(){toast("Заявка отправлена"); sellLoad()})
+    .catch(function(e){toast(e.message)}).then(function(){busy=false});
+}
+function prodForm(){
+  var cat=C[PF.c];
+  return '<div class="card"><div style="font-weight:800;font-size:17px;display:flex;gap:8px;align-items:center;margin-bottom:12px">'+ic("plus")+'Добавить товар</div>'+
+    '<label class="up">'+(photo?'<img src="'+photo+'" alt="">':ic("upload","l")+'<span>Добавить фото товара</span><span class="cap">Фото обрежется до квадрата</span>')+'<input type="file" id="file" accept="image/*,.cr2,.cr3,.nef,.arw,.dng,.orf,.rw2,.raf,.heic,.heif" hidden></label>'+
+    '<label class="fld"><b>Название товара</b><input class="in" data-pf="n" value="'+esc(PF.n)+'" placeholder="Лежанка-облако с бортиком"></label>'+
+    '<div class="two"><label class="fld"><b>Цена, ₽</b><input class="in" data-pf="p" inputmode="decimal" value="'+esc(PF.p)+'"></label><label class="fld"><b>Количество, шт.</b><input class="in" data-pf="q" inputmode="numeric" value="'+esc(PF.q)+'"></label></div>'+
+    '<label class="fld"><b>Срок доставки</b><select class="in" data-pf="ld">'+[1,2,3,4,5,7,10,14].map(function(n){return '<option value="'+n+'"'+(String(PF.ld)===String(n)?' selected':'')+'>Доставлю в течение '+n+' дн.</option>'}).join("")+'</select></label>'+
+    '<div class="two"><label class="fld"><b>Категория</b><select class="in" data-pf="c">'+C.map(function(c,i){return '<option value="'+i+'"'+(PF.c===i?' selected':'')+'>'+c.n+'</option>'}).join("")+'</select></label>'+
+    '<label class="fld"><b>Вид товара</b><select class="in" data-pf="t">'+cat.t.map(function(t,i){return '<option value="'+i+'"'+(PF.t===i?' selected':'')+'>'+t+'</option>'}).join("")+'</select></label></div>'+
+    '<div class="fld"><b>Для каких питомцев <span class="cap">не выбрано = для всех</span></b><div class="chips" style="padding:0;flex-wrap:wrap;overflow:visible">'+PETS.map(function(x){return '<button class="chip'+(PF.pets.indexOf(x[0])>-1?' on':'')+'" data-a="pfpet" data-k="'+x[0]+'">'+x[2]+' '+x[1]+'</button>'}).join("")+'</div></div>'+
+    '<label class="fld"><b>Описание <span class="cap">необязательно</span></b><textarea class="in" data-pf="d" placeholder="Материал, размеры, особенности">'+esc(PF.d)+'</textarea></label>'+
+    '<button class="btn" data-a="pub">Опубликовать товар</button></div>';
+}
+function publish(){
+  var p=parseFloat(String(PF.p).replace(",",".")), q=parseInt(PF.q,10);
+  if(!photo) return toast("Добавьте фото товара");
+  if(PF.n.trim().length<2) return toast("Введите название");
+  if(!(p>0)) return toast("Введите цену");
+  if(!(q>0)) return toast("Укажите количество");
+  if(busy) return; busy=true; toast("Публикуем…");
+  api("add_product",{name:PF.n.trim(),price:p,qty:q,lead_days:+PF.ld,category:PF.c,type:PF.t,photo:photo,pets:PF.pets,descr:PF.d.trim()})
+    .then(function(){ photo=""; PF.n="";PF.p="";PF.q="";PF.d="";PF.pets=[]; hap("medium"); toast("Готово! Ваш товар уже ищет своего питомца"); render(); loadMine(); loadDb(); })
+    .catch(function(e){toast(e.message)}).then(function(){busy=false});
+}
+function loadMine(){ api("my_products").then(function(j){SELL.mine=j.products; if(TAB==="sell"&&!STK.length) render();}).catch(function(){}); }
+function myProducts(){
+  var m=SELL.mine||[]; 
+  var cl=function(p){return p.approved&&p.qty>0}, out=function(p){return p.approved&&p.qty<=0}, off=function(p){return !p.approved};
+  var f={all:m,act:m.filter(cl),out:m.filter(out),off:m.filter(off)};
+  var list=f[MYF]||m;
+  return '<div class="sec">Мои товары</div><div class="chips">'+[["all","Все"],["act","Активные"],["out","Закончились"],["off","Снятые"]].map(function(x){return '<button class="chip'+(MYF===x[0]?' on':'')+'" data-a="myf" data-k="'+x[0]+'">'+x[1]+' '+f[x[0]].length+'</button>'}).join("")+'</div>'+
+    (list.length?list.map(function(p){
+      var st=!p.approved?['Снят','er']:p.qty<=0?['Закончился','wn']:['Опубликован','ok'];
+      return '<div class="row"><div class="th ph g'+(p.category%4)+'">'+(p.img?'<img src="'+esc(p.img)+'" alt="">':ic(C[p.category].k))+'</div><div class="t"><b>'+esc(p.name)+'</b><div class="meta">'+fmt(+p.price)+' · остаток '+p.qty+' · '+p.lead_days+' дн.</div><span class="st '+st[1]+'" style="margin-top:6px">'+st[0]+'</span></div><button class="ibtn" data-a="mydel" data-id="'+p.id+'" aria-label="Удалить" style="border-radius:12px">'+ic("trash","s")+'</button></div>';
+    }).join(""):'<div class="empty" style="padding:18px"><p>'+(m.length?'В этой группе пока ничего нет':'У вас пока нет товаров')+'</p></div>');
+}
+function loadMyComplaints(){ api("my_complaints").then(function(j){SELL.cmp=j.complaints; if(TAB==="sell"&&!STK.length) render();}).catch(function(){}); }
+function cmpHtml(){
+  var c=SELL.cmp; if(!c) return '';
+  return c.length?c.map(function(x){return '<div class="row"><div class="t"><b>Жалоба №'+x.id+'</b> <span class="cap">'+dru(x.created_at)+'</span><div class="meta">'+esc(x.reason)+(x.comment?' — '+esc(x.comment):'')+'</div>'+(x.seller_reply?'<span class="st ok" style="margin-top:6px">Ответ отправлен</span>':'')+'</div><button class="b2 b" data-a="cq" data-id="'+x.id+'">Ответить</button></div>'}).join(""):'<div class="empty" style="padding:14px"><p>Жалоб нет</p></div>';
+}
+
+/* ===== Фото: квадрат, RAW ===== */
+function useImage(src,onerr){
+  var im=new Image();
+  im.onload=function(){
+    var side=Math.min(im.width,im.height), out=Math.max(1,Math.min(600,side)), cv=document.createElement("canvas");
+    cv.width=out; cv.height=out; cv.getContext("2d").drawImage(im,(im.width-side)/2,(im.height-side)/2,side,side,0,0,out,out);
+    photo=cv.toDataURL("image/jpeg",.78); if(src.indexOf("blob:")===0) URL.revokeObjectURL(src); render();
+  };
+  im.onerror=function(){ if(src.indexOf("blob:")===0) URL.revokeObjectURL(src); onerr(); };
+  im.src=src;
+}
+function rawPreview(f,ok,fail){
+  var r=new FileReader();
+  r.onload=function(){
+    var b=new Uint8Array(r.result), starts=[];
+    for(var i=0;i<b.length-3&&starts.length<10;i++) if(b[i]===255&&b[i+1]===216&&b[i+2]===255) starts.push(i);
+    if(!starts.length) return fail();
+    var best=null,k=0;
+    (function next(){
+      if(k>=starts.length) return best?ok(best.url):fail();
+      var url=URL.createObjectURL(new Blob([b.subarray(starts[k++])],{type:"image/jpeg"})), im=new Image();
+      im.onload=function(){var px=im.naturalWidth*im.naturalHeight; if(!best||px>best.px){if(best)URL.revokeObjectURL(best.url); best={px:px,url:url}} else URL.revokeObjectURL(url); next()};
+      im.onerror=function(){URL.revokeObjectURL(url); next()}; im.src=url;
+    })();
+  };
+  r.readAsArrayBuffer(f);
+}
+function handleFile(f){
+  if(!f) return; if(f.size>120*1024*1024) return toast("Файл слишком большой");
+  var fail=function(){toast("Не удалось прочитать фото. Сохраните его как JPEG и попробуйте снова")};
+  var url=URL.createObjectURL(f);
+  useImage(url,function(){toast("Обрабатываем фото…"); rawPreview(f,function(u){useImage(u,fail)},fail)});
+}
+
+/* ===== Статистика ===== */
+function pct(a,b){return b?Math.round(a*100/b)+"%":"0%"}
+function perChips(){return '<div class="chips">'+[[1,"1 день"],[3,"3 дня"],[7,"7 дн."],[20,"20 дн."],[30,"30 дн."],[0,"Всё время"]].map(function(x){return '<button class="chip'+(SP===x[0]?' on':'')+'" data-a="per" data-d="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</div>'}
+function hbars(title,rows){
+  if(!rows.length) return "";
+  var mx=Math.max.apply(null,rows.map(function(r){return r.v}))||1;
+  return '<div class="sec" style="font-size:16px;margin:16px 16px 6px">'+title+'</div>'+rows.map(function(r){return '<div class="hb"><span>'+esc(r.l)+'</span><div><i style="width:'+Math.max(2,Math.round(r.v*100/mx))+'%"></i></div><b>'+r.t+'</b></div>'}).join("");
+}
+function statsHtml(s,admin,sid){
+  var t=s.totals, h=(s.truncated?'<div class="note">Заказов слишком много: данные неполные. Для точных цифр выгружайте узкий период.</div>':'')+perChips()+
+    '<div class="wrap"><button class="btn gh" data-a="exp" data-s="'+(admin?"admin":"seller")+'" data-sid="'+(sid||0)+'">'+ic("upload","s")+'Выгрузить в Excel (CSV)</button></div>';
+  h+='<div class="kpi">'+[["Выручка (за вычетом возвратов)",fmt(t.revenue)],["Продано единиц",t.units],["Возвраты",fmt(t.refunds||0)+" ("+(t.refund_count||0)+")"],["Заказов всего",t.orders],["Заказы: в работе / продано",t.pending+" / "+t.sold_orders],["Средний чек",fmt(t.avg_check)],["Отмены",t.cancelled+" ("+pct(t.cancelled,t.orders)+")"],[admin?"Покупателей":"Доставлено",admin?t.buyers:t.delivered]].map(function(k){return '<div class="k"><span class="meta">'+k[0]+'</span><b>'+k[1]+'</b></div>'}).join("")+
+    (s.complaints?'<div class="k w"><span class="meta">Жалоб за период</span><b>'+s.complaints.count+'</b>'+(s.complaints.reasons.length?'<div class="meta">'+s.complaints.reasons.map(function(r){return esc(r.reason)+': '+r.n}).join(" · ")+'</div>':'')+'</div>':'')+'</div>';
+  if(s.days.length){
+    var mx=Math.max.apply(null,s.days.map(function(d){return d.revenue}))||1, mo=Math.max.apply(null,s.days.map(function(d){return d.orders}))||1;
+    h+='<div class="sec" style="font-size:16px;margin:12px 16px 6px">Выручка по дням</div><div class="bars">'+s.days.map(function(d){return '<i style="height:'+Math.max(3,Math.round(d.revenue*100/mx))+'%" title="'+dru(d.day)+': '+fmt(d.revenue)+'"></i>'}).join("")+'</div><div class="cap" style="padding:2px 16px 8px">'+dru(s.days[0].day)+' — '+dru(s.days[s.days.length-1].day)+'</div>'+
+      '<div class="sec" style="font-size:16px;margin:8px 16px 6px">Заказы по дням</div><div class="bars">'+s.days.map(function(d){return '<i style="height:'+Math.max(3,Math.round(d.orders*100/mo))+'%;background:var(--berry)" title="'+dru(d.day)+': '+d.orders+'"></i>'}).join("")+'</div>';
+  }
+  h+=hbars("Топ товаров по выручке",s.products.slice(0,8).map(function(p){return {l:p.name,v:p.revenue,t:fmt(p.revenue)}}));
+  h+=hbars("Выручка по категориям",s.categories.map(function(c){return {l:C[c.category]?C[c.category].n:"Без категории",v:c.revenue,t:fmt(c.revenue)}}));
+  if(admin&&s.sellers) h+=hbars("Топ продавцов по выручке",s.sellers.slice(0,8).map(function(x){return {l:x.shop_name,v:x.revenue,t:fmt(x.revenue)}}));
+  h+=hbars("Причины отмен",s.reasons.map(function(r){return {l:r.reason,v:r.n,t:r.n}}));
+  if(s.complaints) h+=hbars("Причины жалоб",s.complaints.reasons.map(function(r){return {l:r.reason,v:r.n,t:r.n}}));
+  h+='<div class="sec" style="font-size:16px;margin:16px 16px 4px">Товары</div><div class="tr h"><span>Товар</span><span>Шт.</span><span>Выручка</span><span>Цена</span></div>';
+  h+=s.products.length?s.products.map(function(p){return '<div class="tr"><span>'+esc(p.name)+'</span><span>'+p.units+'</span><span>'+fmt(p.revenue)+'</span><span>'+fmt(p.avg)+(p.min!==p.max?'<div class="cap">'+fmt(p.min)+'–'+fmt(p.max)+'</div>':'')+'</span></div>'}).join(""):'<div class="empty" style="padding:14px"><p>Продаж за период нет</p></div>';
+  if(admin&&s.sellers&&s.sellers.length) h+='<div class="sec" style="font-size:16px;margin:16px 16px 4px">Продавцы</div><div class="tr s h"><span>Магазин</span><span>Заказов</span><span>Шт.</span><span>Выручка</span><span>Отмены</span></div>'+s.sellers.map(function(x){return '<div class="tr s"><span>'+esc(x.shop_name)+'</span><span>'+x.orders+'</span><span>'+x.units+'</span><span>'+fmt(x.revenue)+'</span><span>'+pct(x.cancelled,x.orders)+'</span></div>'}).join("");
+  if(!admin&&s.low_stock&&s.low_stock.length) h+='<div class="sec" style="font-size:16px;margin:16px 16px 4px">Заканчивается</div>'+s.low_stock.map(function(x){return '<div class="tr" style="grid-template-columns:4fr 1fr"><span>'+esc(x.name)+'</span><span>'+x.qty+' шт.</span></div>'}).join("");
+  return h;
+}
+function loadSellerStats(){ api("stats_seller",{days:SP}).then(function(s){SELL.stats=s; if(TAB==="sell"&&!STK.length) render();}).catch(function(e){toast(e.message)}); }
+
+/* ===== Админ-панель ===== */
+var AT="p", AS=0, ADM={h:'<div class="empty"><p>Загружаем…</p></div>'};
+function adminTabs(){return '<div class="chips" style="padding-top:6px">'+[["p","Платформа"],["s","Продавцы"],["r","Заявки"]].map(function(x){return '<button class="chip'+(AT===x[0]?' on':'')+'" data-a="at" data-t="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</div>'}
+function pAdmin(){ ADM.h='<div class="empty"><p>Загружаем…</p></div>'; push("Админ-панель", function(){return adminTabs()+ADM.h}, null); adminLoad(); }
+function adminLoad(){
+  ADM.h='<div class="empty"><p>Загружаем…</p></div>'; repage();
+  var P_;
+  if(AT==="p") P_=api("stats_admin",{days:SP}).then(function(s){return '<div class="wrap"><button class="btn gh" data-a="sync">Обновить пункты выдачи СДЭК</button></div>'+statsHtml(s,true,0)+'<div class="meta wrap" style="padding:8px 16px">В каталоге товаров: '+s.catalog.products+' · продавцов: '+s.catalog.sellers+'</div>'});
+  else if(AT==="s"&&AS) P_=api("stats_admin_seller",{seller_id:AS,days:SP}).then(function(s){
+    var p=s.profile;
+    return '<div class="wrap"><button class="link" data-a="sback">← Все продавцы</button></div><div class="sec" style="margin-top:8px">'+esc(p.shop_name)+(p.blocked?' 🚫':(p.approved?'':' ⏳'))+'</div><div class="meta wrap" style="margin-bottom:8px">'+esc(p.status)+' · ИНН '+esc(p.inn)+' · '+esc(p.phone)+' · ID '+p.tg_id+'</div>'+
+      '<div class="wrap"><button class="btn'+(p.blocked?' ol':' red')+'" data-a="blk" data-id="'+p.tg_id+'" data-b="'+(p.blocked?0:1)+'">'+(p.blocked?'Разблокировать магазин':'Заблокировать магазин')+'</button></div>'+statsHtml(s,false,AS)+
+      '<div class="sec" style="font-size:16px">Товары продавца ('+s.products.length+')</div>'+(s.products.length?s.products.map(function(x){return '<div class="row"><div class="t"><b>'+esc(x.name)+'</b><div class="meta">'+fmt(+x.price)+' · остаток '+x.qty+(x.approved?'':' · скрыт')+'</div></div><button class="b2 red" data-a="apd" data-id="'+x.id+'">Удалить</button></div>'}).join(""):'<div class="empty" style="padding:12px"><p>Нет товаров</p></div>');
+  });
+  else if(AT==="s") P_=api("admin_sellers",{days:SP}).then(function(j){
+    return perChips()+(j.sellers.length?j.sellers.map(function(x){return '<div class="row" data-a="sel" data-id="'+x.tg_id+'" style="cursor:pointer"><div class="t"><b>'+esc(x.shop_name)+'</b> '+(x.blocked?'🚫':(x.approved?'✅':'⏳'))+'<div class="meta">'+esc(x.status)+' · товаров: '+x.products+'</div><div class="meta">Заказов: '+x.orders+' · шт.: '+x.units+' · выручка: <b>'+fmt(x.revenue)+'</b>'+(x.cancelled?' · отмен: '+x.cancelled:'')+(x.complaints?' · жалоб: '+x.complaints:'')+(x.rating_cnt?' · <span class="rt">★ '+(+x.rating_avg).toFixed(1)+'</span> ('+x.rating_cnt+')':'')+'</div></div>'+ic("chev")+'</div>'}).join(""):'<div class="empty"><p>Продавцов пока нет</p></div>');
+  });
+  else P_=api("admin_list").then(function(j){
+    return '<div class="sec" style="margin-top:8px">Заявки продавцов ('+j.sellers.length+')</div>'+(j.sellers.length?j.sellers.map(function(x){return '<div class="card"><b>'+esc(x.shop_name)+'</b><div class="meta">'+esc(x.status)+' · ИНН '+esc(x.inn)+' · '+esc(x.phone)+'</div><button class="btn sm ol" data-a="dec" data-k="seller" data-id="'+x.tg_id+'" data-ok="1">Одобрить</button><button class="btn sm red" data-a="dec" data-k="seller" data-id="'+x.tg_id+'" data-ok="0">Отклонить</button></div>'}).join(""):'<div class="empty"><p>Нет заявок</p></div>');
+  });
+  P_.then(function(h){ADM.h=h; repage()}).catch(function(e){ADM.h='<div class="empty"><p>'+esc(e.message)+'</p></div>'; repage()});
+}
+function decide(k,id,ok){
+  if(busy) return; busy=true;
+  api("admin_decide",{kind:k,id:id,ok:ok}).then(function(){adminLoad(); loadDb()}).catch(function(e){toast(e.message)}).then(function(){busy=false});
+}
+
+/* ===== События ===== */
+function onAdminPage(){ return STK.length && STK[STK.length-1].t==="Админ-панель"; }
+function roleChosen(r){
+  ss("ps_role",r); document.querySelector("#tabs").style.display="";
+  go(r==="seller"?"sell":"home");
+}
+document.addEventListener("click",function(e){
+  var el=e.target.closest("[data-a]"); if(!el) return;
+  var a=el.getAttribute("data-a"), d=el.dataset, id=d.id;
+  if (a==="tab") go(d.t);
+  else if (a==="prod") pProduct(id);
+  else if (a==="fav") { e.stopPropagation(); toggleFav(id); }
+  else if (a==="addcart") { if (d.cb && cart[id]) pCart(); else chg(id,1); }
+  else if (a==="sub") chg(id,-1);
+  else if (a==="cart") { if (STK.length && STK[STK.length-1].t==="Корзина") return; pCart(); }
+  else if (a==="checkout") pCheckout();
+  else if (a==="co") checkout();
+  else if (a==="svc") { if (CHK.s!==d.s) { CHK.s=d.s; CHK.v=null; } repage(); }
+  else if (a==="map") pMap();
+  else if (a==="pick") { CHK.v=PBY[id]||null; if(CHK.v){ toast("Пункт выдачи выбран"); if(STK.length&&/Пункты выдачи/.test(STK[STK.length-1].t)) pop(); } }
+  else if (a==="pop") pop();
+  else if (a==="cat") { F2.c=+d.i; F2.t=-1; go("catalog"); }
+  else if (a==="cat2") { F2.c=+d.i; F2.t=-1; render(); }
+  else if (a==="typ") { F2.t=+d.i; render(); }
+  else if (a==="pet") { F2.pet=d.k; render(); }
+  else if (a==="orders") { STK=[]; $("pg").classList.remove("show"); pOrders(); }
+  else if (a==="support") pSupport();
+  else if (a==="pk") pPick(d.k);
+  else if (a==="rf") pRefuse(+id);
+  else if (a==="rfgo") doRefuse(+id);
+  else if (a==="rtn") pReturn(+id);
+  else if (a==="rtgo") doReturn(+id);
+  else if (a==="cmp") pComplaint(+id);
+  else if (a==="cmpgo") doComplaint(+id);
+  else if (a==="sup") askSupport(+id);
+  else if (a==="role") { if ($("tabs").style.display==="none") roleChosen(d.r); else { ss("ps_role",d.r); if (d.r==="seller") go("sell"); else render(); } }
+  else if (a==="home2") { STK=[]; $("pg").classList.remove("show"); go("home"); }
+  else if (a==="sellref") sellLoad();
+  else if (a==="reg") register();
+  else if (a==="pub") publish();
+  else if (a==="myf") { MYF=d.k; render(); }
+  else if (a==="mydel") askOk("Удалить этот товар?",function(){ api("delete_product",{id:+id}).then(function(){toast("Товар удалён"); loadMine(); loadDb()}).catch(function(e){toast(e.message)}); });
+  else if (a==="pfpet") { var i=PF.pets.indexOf(d.k); if(i>-1) PF.pets.splice(i,1); else PF.pets.push(d.k); render(); }
+  else if (a==="cq") api("complaint_reply_start",{id:+id}).then(function(){toast("Откройте чат с ботом и ответьте на сообщение"); if(tg&&tg.close) setTimeout(function(){tg.close()},1200)}).catch(function(e){toast(e.message)});
+  else if (a==="per") { SP=+d.d; if (onAdminPage()) adminLoad(); else loadSellerStats(); }
+  else if (a==="exp") api("export_stats",{days:SP,scope:d.s,seller_id:+d.sid||0}).then(function(){toast("Файл отправлен вам в чат с ботом")}).catch(function(e){toast(e.message)});
+  else if (a==="rate") pRate(+id);
+  else if (a==="star") { RT.v[d.k]=+d.v; repage(); }
+  else if (a==="ratego") doRate();
+  else if (a==="admin") pAdmin();
+  else if (a==="at") { AT=d.t; AS=0; adminLoad(); }
+  else if (a==="sel") { AS=+id; adminLoad(); }
+  else if (a==="sback") { AS=0; adminLoad(); }
+  else if (a==="dec") decide(d.k,id,d.ok==="1");
+  else if (a==="blk") askOk(+d.b?"Заблокировать магазин и скрыть все его товары?":"Снять блокировку и вернуть товары в каталог?",function(){ api("admin_block",{seller_id:+id,block:!!+d.b}).then(function(){toast("Готово"); adminLoad(); loadDb()}).catch(function(e){toast(e.message)}); });
+  else if (a==="apd") askOk("Удалить этот товар?",function(){ api("admin_delete_product",{id:+id}).then(function(){toast("Товар удалён"); adminLoad(); loadDb()}).catch(function(e){toast(e.message)}); });
+  else if (a==="sync") api("admin_sync_pvz").then(function(){toast("Обновление запущено. Результат придёт сообщением от бота")}).catch(function(e){toast(e.message)});
+});
+function onField(e){
+  var t=e.target, f=t.getAttribute&&t.getAttribute("data-f"), pf=t.getAttribute&&t.getAttribute("data-pf"), rg=t.getAttribute&&t.getAttribute("data-rg");
+  if (f) CHK[f]=t.value;
+  else if (rg) RG[rg]=t.value;
+  else if (pf) {
+    if (pf==="c") { PF.c=+t.value; PF.t=0; if (e.type==="change") render(); }
+    else if (pf==="t") PF.t=+t.value;
+    else PF[pf]=t.value;
+  }
+  else if (t.id==="rtxt") RT.c=t.value;
+  else if (t.id==="cq") { F2.q=t.value; var g=$("cgrid"); if(g){ var l=filtered(); g.innerHTML=l.length?'<div class="grid" style="margin-top:4px">'+l.map(card).join("")+'</div>':emptyState("search","Ничего не нашли","Попробуйте изменить фильтры или поисковый запрос."); } }
+}
+document.addEventListener("input",onField);
+["gesturestart","gesturechange","gestureend"].forEach(function(n){ document.addEventListener(n,function(e){e.preventDefault()}); });
+var lastTap=0; document.addEventListener("touchend",function(e){ var t=Date.now(); if(t-lastTap<350 && !/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) e.preventDefault(); lastTap=t; },{passive:false});
+document.addEventListener("change",function(e){
+  if (e.target.id==="file") return handleFile(e.target.files[0]);
+  onField(e);
+});
+document.addEventListener("keydown",function(e){
+  if (e.key==="Enter" && e.target.id==="hq") { F2.q=e.target.value; F2.c=-1; F2.t=-1; go("catalog"); }
+  else if (e.key==="Enter" && e.target.id==="cq") e.target.blur();
+});
+
+/* ===== старт ===== */
+var startRole = ls("ps_role",null);
+if (!startRole) { roleScreen(); }
+else { go(startRole==="seller" ? "sell" : "home"); }
+loadDb();
+if (INIT) api("me").then(function(j){ ME=j; SELL.me=SELL.me||j; }).catch(function(){});
+
+</script>
+</body>
+</html>
